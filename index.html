@@ -1390,6 +1390,13 @@ function openDetail(id){
   modal.querySelectorAll("[data-sim]").forEach(b=>b.addEventListener("click",()=>{openDetail(+b.dataset.sim);document.getElementById("detailOverlay").scrollTop=0}));
   modal.querySelector(".modal-close").addEventListener("click",()=>closeOverlay("detailOverlay"));
   openOverlay("detailOverlay");
+  if(CLOUD&&c._row&&c._hasPhotos&&!c._photosLoaded){
+    c._photosLoaded=true;
+    sbFetch("listings?id=eq."+c._row+"&select=photos").then(rows=>{
+      const ph=rows&&rows[0]&&rows[0].photos;
+      if(Array.isArray(ph)&&ph.length){c.photos=ph;if(document.getElementById("detailOverlay").classList.contains("show"))openDetail(c.id);}
+    }).catch(()=>{});
+  }
 }
 function wheelSVG(c){
   return `<svg viewBox="0 0 120 120" width="220" aria-hidden="true">
@@ -1481,6 +1488,96 @@ function integrateListings(){
   myListings.forEach(c=>{ensureMakeModel(c.make,c.model);CARS.unshift(c)});
 }
 
+/* ================= CLOUD (SUPABASE) ================= */
+const SB_URL="https://enjftgvozonpmawkartr.supabase.co";
+const SB_KEY="sb_publishable_5d_JJRFXQfhRwHmcPkO0oA_65zEHTd2";
+const CLOUD=!!(SB_URL&&SB_KEY);
+let cloudCars=[];
+function getClientId(){let c=localStorage.getItem("vetura_client");if(!c){c="c_"+Math.random().toString(36).slice(2)+Date.now().toString(36);try{localStorage.setItem("vetura_client",c)}catch(e){}}return c}
+const CLIENT_ID=getClientId();
+function loadTokens(){try{return JSON.parse(localStorage.getItem("vetura_tokens"))||{}}catch(e){return{}}}
+function saveTokens(){try{localStorage.setItem("vetura_tokens",JSON.stringify(myTokens))}catch(e){}}
+let myTokens=loadTokens();
+async function sbFetch(path,opts){
+  opts=opts||{};
+  const r=await fetch(SB_URL+"/rest/v1/"+path,{...opts,headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",...(opts.headers||{})}});
+  if(!r.ok)throw new Error(r.status+" "+(await r.text()));
+  const t=await r.text();return t?JSON.parse(t):null;
+}
+function shrinkDataUrl(src,maxDim,q){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onerror=rej;
+    img.onload=()=>{
+      let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+      if(w>h&&w>maxDim){h=Math.round(h*maxDim/w);w=maxDim;}
+      else if(h>=w&&h>maxDim){w=Math.round(w*maxDim/h);h=maxDim;}
+      const cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(img,0,0,w,h);
+      try{res(cv.toDataURL("image/jpeg",q));}catch(e){rej(e);}
+    };
+    img.src=src;
+  });
+}
+function rowToCar(row){
+  const car={...row.summary};
+  car.id=row.summary.id;
+  car._row=row.id;
+  car._cover=row.cover||null;
+  car.photos=row.cover?[row.cover]:[];
+  car._hasPhotos=!!row.cover;
+  car._photosLoaded=false;
+  car.mine=!!myTokens[row.id];
+  if(car.dealer&&car.dealer.mine)car.dealer.mine=car.mine;
+  return car;
+}
+async function loadCloudListings(){
+  try{
+    const rows=await sbFetch("listings?select=id,created_at,client_id,cover,summary&order=created_at.desc");
+    cloudCars.forEach(c=>{const i=CARS.indexOf(c);if(i>=0)CARS.splice(i,1);});
+    cloudCars=(rows||[]).map(rowToCar);
+    cloudCars.forEach(c=>{ensureMakeModel(c.make,c.model);CARS.unshift(c);});
+    rebuildMakeSelects();refreshStats();updateFilterCounts();ensureMineChip();render();
+  }catch(e){console.error("cloud load",e);toast("Nuk u ngarkuan dot shpalljet online");}
+}
+async function cloudPublish(d){
+  const editId=sellState.editId;
+  const editingCar=editId?CARS.find(c=>c.id===editId):null;
+  const logicalId=editingCar?editingCar.id:(Date.now()*1000+Math.floor(rnd()*1000));
+  const car=composeCar(d,logicalId,sellState.scene,sellState.plate);
+  const summary={...car};["photos","mine","_row","_hasPhotos","_cover","_photosLoaded"].forEach(k=>delete summary[k]);
+  if(summary.dealer)summary.dealer={...summary.dealer,mine:false};
+  const photos=car.photos.slice();
+  const btn=document.getElementById("slPublish");const lbl=btn.textContent;btn.disabled=true;btn.textContent="Duke ruajtur…";
+  try{
+    const cover=photos.length?await shrinkDataUrl(photos[0],480,0.6):null;
+    if(editingCar&&editingCar._row){
+      const token=myTokens[editingCar._row];
+      await sbFetch("rpc/update_listing",{method:"POST",body:JSON.stringify({p_id:editingCar._row,p_token:token,p_summary:summary,p_cover:cover,p_photos:photos})});
+      car._row=editingCar._row;
+    }else{
+      const token="t_"+Math.random().toString(36).slice(2)+Date.now().toString(36);
+      const ins=await sbFetch("listings?select=id",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({client_id:CLIENT_ID,edit_token:token,summary,cover,photos})});
+      car._row=ins[0].id;myTokens[car._row]=token;saveTokens();
+    }
+    car.mine=true;car._cover=cover;car._hasPhotos=photos.length>0;car._photosLoaded=true;car.photos=photos;
+    if(editingCar){const i=CARS.findIndex(c=>c.id===logicalId);if(i>=0)CARS[i]=car;const ci=cloudCars.findIndex(c=>c._row===car._row);if(ci>=0)cloudCars[ci]=car;}
+    else{CARS.unshift(car);cloudCars.unshift(car);}
+    refreshStats();updateFilterCounts();ensureMineChip();
+    closeOverlay("sellOverlay");render();
+    document.getElementById("listings").scrollIntoView({behavior:"smooth"});
+    toast(editingCar?"Shpallja u përditësua ✓":"Shpallja u publikua! 🎉");
+    sellState.editId=null;
+    setTimeout(()=>openDetail(logicalId),editingCar?0:380);
+  }catch(err){console.error("cloud publish",err);toast("Gabim gjatë ruajtjes online. Provo përsëri.");}
+  finally{btn.disabled=false;btn.textContent=lbl;}
+}
+async function cloudDelete(car){
+  const token=myTokens[car._row];
+  await sbFetch("rpc/delete_listing",{method:"POST",body:JSON.stringify({p_id:car._row,p_token:token})});
+  delete myTokens[car._row];saveTokens();
+  const ci=cloudCars.findIndex(c=>c._row===car._row);if(ci>=0)cloudCars.splice(ci,1);
+}
+
 /* ================= STATS / COUNT REFRESH ================= */
 function refreshStats(){
   document.getElementById("statTotal").textContent=CARS.length.toLocaleString("de-DE");
@@ -1505,11 +1602,15 @@ function rebuildMakeSelects(){
   buildModelSelect();
 }
 function ensureMineChip(){
-  if(!myListings.length)return;
+  const has=CLOUD?CARS.some(c=>c.mine):myListings.length>0;
   const wrap=document.getElementById("quickChips");
-  if(wrap.querySelector('[data-q="mine"]'))return;
-  const b=document.createElement("button");b.className="chip";b.dataset.q="mine";b.textContent="★ Shpalljet e mia";
-  wrap.appendChild(b);
+  const existing=wrap.querySelector('[data-q="mine"]');
+  if(has&&!existing){
+    const b=document.createElement("button");b.className="chip";b.dataset.q="mine";b.textContent="★ Shpalljet e mia";
+    wrap.appendChild(b);
+  }else if(!has&&existing){
+    existing.remove();state.mineOnly=false;
+  }
 }
 
 /* ================= COMPOSE A CAR FROM LISTING DATA ================= */
@@ -1542,8 +1643,8 @@ function composeCar(d,id,scene,plate){
 }
 
 /* ================= MEDIA HELPERS (photo or SVG) ================= */
-function cardMedia(c){return c.photos&&c.photos.length?`<img class="card-photo" src="${c.photos[0]}" alt="${c.year} ${c.make} ${c.model}">`:carSVG(c)}
-function carThumb(c,w){return c.photos&&c.photos.length?`<img class="thumb-photo" src="${c.photos[0]}" alt="">`:carSVG(c,w)}
+function cardMedia(c){const src=c._cover||(c.photos&&c.photos[0]);return src?`<img class="card-photo" src="${src}" alt="${c.year} ${c.make} ${c.model}">`:carSVG(c)}
+function carThumb(c,w){const src=c._cover||(c.photos&&c.photos[0]);return src?`<img class="thumb-photo" src="${src}" alt="">`:carSVG(c,w)}
 
 /* ================= PHOTO UPLOAD ================= */
 const MAX_PHOTOS=6;
@@ -1670,6 +1771,12 @@ function openSell(prefill,editId){
     document.querySelectorAll("#slColors .swatch").forEach(x=>x.classList.toggle("on",x.dataset.color===c.color[0]));
     document.querySelectorAll("#slFeats .feat-pick").forEach(b=>b.classList.toggle("on",(c.feats||[]).includes(b.dataset.feat)));
     sellState.scene=c.scene;sellState.plate=c.plate;sellState.photos=(c.photos||[]).slice();
+    if(CLOUD&&c._row&&c._hasPhotos&&!c._photosLoaded){
+      sbFetch("listings?id=eq."+c._row+"&select=photos").then(rows=>{
+        const ph=rows&&rows[0]&&rows[0].photos;
+        if(Array.isArray(ph)){c.photos=ph;c._photosLoaded=true;if(document.getElementById("sellOverlay").classList.contains("show")&&sellState.editId===c.id){sellState.photos=ph.slice();renderPhotoThumbs();updatePreview();}}
+      }).catch(()=>{});
+    }
     f("sellTitle").textContent="Ndrysho shpalljen";f("slPublish").textContent="Ruaj ndryshimet";
   } else {
     sellState.scene=pick(SCENES);sellState.plate=plate();
@@ -1693,6 +1800,7 @@ function publishListing(e){
     return;
   }
   ensureMakeModel(d.make,d.model);rebuildMakeSelects();
+  if(CLOUD){cloudPublish(d);return;}
   const editing=sellState.editId;
   const id=editing||Date.now();
   const car=composeCar(d,id,sellState.scene,sellState.plate);
@@ -1709,12 +1817,18 @@ function publishListing(e){
   sellState.editId=null;
   setTimeout(()=>openDetail(id),editing?0:380);
 }
-function deleteListing(id){
+async function deleteListing(id){
   if(!confirm("Të fshihet kjo shpallje përgjithmonë?"))return;
+  const car=CARS.find(c=>c.id===id);
+  if(CLOUD){
+    if(!car||!car._row||!myTokens[car._row]){toast("Nuk ke leje për këtë shpallje");return;}
+    try{await cloudDelete(car);}catch(e){console.error("cloud delete",e);toast("Nuk u fshi dot online. Provo përsëri.");return;}
+  }else{
+    myListings=myListings.filter(c=>c.id!==id);saveListings(myListings);
+  }
   const i=CARS.findIndex(c=>c.id===id);if(i>=0)CARS.splice(i,1);
-  myListings=myListings.filter(c=>c.id!==id);saveListings(myListings);
   favs.delete(id);saveFavs();cmp.delete(id);
-  if(!myListings.length){const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.remove();state.mineOnly=false}
+  ensureMineChip();
   refreshStats();updateFilterCounts();updateFavCount();renderTray();
   closeOverlay("detailOverlay");render();
   toast("Shpallja u fshi");
@@ -1742,8 +1856,8 @@ const INFO={
     <p>Ky është një demonstrim — asnjë e dhënë nuk ndahet me palë të treta.</p>`},
   privacy:{eyebrow:"Privatësia",title:"Mbrojtja e të dhënave",body:`
     <p>Ne e marrim seriozisht privatësinë tënde.</p>
-    <ul><li>Të preferuarat dhe shpalljet e tua ruhen vetëm në këtë pajisje (localStorage), jo në server.</li><li>Të dhënat e kontaktit përdoren vetëm për të lidhur blerësin me shitësin.</li><li>Nuk shesim e nuk ndajmë të dhënat e tua personale me reklamues.</li><li>Mund t'i fshish shpalljet e tua në çdo moment.</li></ul>
-    <p>Ky është një demonstrim — të dhënat qëndrojnë lokalisht në shfletuesin tënd.</p>`},
+    <ul><li>Kur publikon një shpallje, të dhënat e saj (përfshirë emrin, telefonin dhe fotot) bëhen publike dhe ruhen në mënyrë të sigurt që t'i shohin blerësit.</li><li>Vetëm ti mund të ndryshosh ose fshish shpalljet e tua — secila ruan një kod të fshehtë në pajisjen tënde.</li><li>Të preferuarat ruhen vetëm në këtë pajisje dhe nuk ndahen me askënd.</li><li>Nuk shesim e nuk ndajmë të dhënat e tua me reklamues.</li></ul>
+    <p>Mos publiko të dhëna që nuk dëshiron t'i bësh publike.</p>`},
   dealers:{eyebrow:"Për koncesionarët",title:"Shit më shumë me VETURA.AL",body:`
     <p>Bashkohu me 64 koncesionarët që arrijnë mijëra blerës të verifikuar çdo muaj.</p>
     <ul><li>Publikim i pakufizuar shpalljesh me vlerësim automatik çmimi</li><li>Profil i verifikuar me yje dhe vlerësime nga klientët</li><li>Statistika në kohë reale për shikimet dhe kontaktet</li></ul>
@@ -1768,7 +1882,7 @@ function setupInfoLinks(){
 
 /* ================= INIT ================= */
 loadFavIds().forEach(id=>favs.add(id));
-integrateListings();
+if(!CLOUD)integrateListings();
 buildSearch();
 buildFilters();
 setupSell();
@@ -1778,6 +1892,7 @@ refreshStats();
 updateFavCount();
 finUpdate();
 render();
+if(CLOUD)loadCloudListings();
 </script>
 </body>
 </html>
