@@ -845,6 +845,10 @@ a{color:inherit;text-decoration:none}
 <div class="toast" id="toast"><span class="tk">✓</span><span id="toastMsg"></span></div>
 
 <script>
+/* ================= CONFIG ================= */
+const SB_URL="https://enjftgvozonpmawkartr.supabase.co";
+const SB_KEY="sb_publishable_5d_JJRFXQfhRwHmcPkO0oA_65zEHTd2";
+const CLOUD=!!(SB_URL&&SB_KEY);
 /* ================= DATA ================= */
 const MAKES = {
   "Mercedes-Benz":["C 220 d","E 300 de","GLC 300","A 180"],
@@ -904,7 +908,7 @@ function plate(){return "AA "+ri(100,999)+" "+PLATE_CHARS[ri(0,18)]+PLATE_CHARS[
 
 const CARS=[];
 let _id=1;
-Object.entries(MAKES).forEach(([make,models])=>{
+if(!CLOUD)Object.entries(MAKES).forEach(([make,models])=>{
   models.forEach(model=>{
     const n=ri(1,2);
     for(let i=0;i<n;i++){
@@ -1064,8 +1068,15 @@ function render(){
   const r=filtered();
   const grid=document.getElementById("grid");
   const slice=r.slice(0,state.shown);
-  grid.innerHTML=slice.length?slice.map(cardHTML).join(""):
-    `<div class="empty"><h3>Asnjë makinë nuk përputhet me filtrat</h3><p>Provo të zgjerosh kriteret e kërkimit ose pastro filtrat.</p><button class="btn-ghost" onclick="resetAll()">Pastro filtrat</button></div>`;
+  let empty;
+  if(CLOUD&&!cloudLoaded&&!CARS.length){
+    empty=`<div class="empty"><h3>Duke ngarkuar shpalljet…</h3><p>Një moment.</p></div>`;
+  }else if(!CARS.length){
+    empty=`<div class="empty"><h3>Ende s'ka shpallje</h3><p>Bëhu i pari që publikon një makinë në VETURA.AL.</p><button class="btn-ghost" onclick="openSell()">+ Publiko shpalljen falas</button></div>`;
+  }else{
+    empty=`<div class="empty"><h3>Asnjë makinë nuk përputhet me filtrat</h3><p>Provo të zgjerosh kriteret e kërkimit ose pastro filtrat.</p><button class="btn-ghost" onclick="resetAll()">Pastro filtrat</button></div>`;
+  }
+  grid.innerHTML=slice.length?slice.map(cardHTML).join(""):empty;
   document.getElementById("resCount").textContent=r.length+" rezultate";
   document.getElementById("resTitle").textContent=state.favOnly?"Të preferuarat e tua":(state.make?state.make+(state.model?" "+state.model:"")+" në shitje":"Makina në shitje");
   document.getElementById("btnMore").style.display=r.length>state.shown?"":"none";
@@ -1566,10 +1577,8 @@ function integrateListings(){
 }
 
 /* ================= CLOUD (SUPABASE) ================= */
-const SB_URL="https://enjftgvozonpmawkartr.supabase.co";
-const SB_KEY="sb_publishable_5d_JJRFXQfhRwHmcPkO0oA_65zEHTd2";
-const CLOUD=!!(SB_URL&&SB_KEY);
 let cloudCars=[];
+let cloudLoaded=false;
 function getClientId(){let c=localStorage.getItem("vetura_client");if(!c){c="c_"+Math.random().toString(36).slice(2)+Date.now().toString(36);try{localStorage.setItem("vetura_client",c)}catch(e){}}return c}
 const CLIENT_ID=getClientId();
 function loadTokens(){try{return JSON.parse(localStorage.getItem("vetura_tokens"))||{}}catch(e){return{}}}
@@ -1613,9 +1622,10 @@ async function loadCloudListings(){
     cloudCars.forEach(c=>{const i=CARS.indexOf(c);if(i>=0)CARS.splice(i,1);});
     cloudCars=(rows||[]).map(rowToCar);
     cloudCars.forEach(c=>{ensureMakeModel(c.make,c.model);CARS.unshift(c);});
+    cloudLoaded=true;
     rebuildMakeSelects();refreshStats();updateFilterCounts();ensureMineChip();updateMineCount();renderLatest();render();
     openSharedFromURL();
-  }catch(e){console.error("cloud load",e);toast("Nuk u ngarkuan dot shpalljet online");}
+  }catch(e){console.error("cloud load",e);cloudLoaded=true;render();toast("Nuk u ngarkuan dot shpalljet online");}
 }
 async function cloudPublish(d){
   const editId=sellState.editId;
