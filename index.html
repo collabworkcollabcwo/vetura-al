@@ -333,6 +333,98 @@ a{color:inherit;text-decoration:none}
   .hero{padding-top:42px}
 }
 @media(max-width:560px){.sp-card{grid-template-columns:1fr}.hdr-in{gap:12px;padding:0 16px}.btn-fav-hdr span.lbl{display:none}}
+
+/* ---------- sell / create listing modal ---------- */
+.sell-modal{max-width:980px}
+.sell-head{padding:24px 56px 18px 26px;border-bottom:1px solid var(--line)}
+.sell-head .se{font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.sell-head h2{font-family:var(--font-d);font-size:25px;font-weight:900;letter-spacing:-.015em;line-height:1.1}
+.sell-head p{color:var(--ink3);font-size:13.5px;margin-top:7px;max-width:460px}
+.sell-grid{display:grid;grid-template-columns:1fr 326px}
+@media(max-width:820px){.sell-grid{grid-template-columns:1fr}}
+.sell-form{padding:22px 26px 24px;max-height:60vh;overflow-y:auto;scrollbar-width:thin}
+@media(max-width:820px){.sell-form{max-height:none}}
+.sell-aside{border-left:1px solid var(--line);background:var(--paper);padding:22px}
+@media(max-width:820px){.sell-aside{border-left:none;border-top:1px solid var(--line)}}
+.sl-sec{font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:22px 0 12px;display:flex;align-items:center;gap:8px}
+.sl-sec::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--red)}
+.sl-sec:first-child{margin-top:0}
+.sl-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.sl-row.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:560px){.sl-row,.sl-row.three{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;min-width:0}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:12.5px;font-weight:600;color:var(--ink2);margin-bottom:6px;display:flex;gap:3px}
+.fld label .req{color:var(--red)}
+.fld input,.fld select,.fld textarea{width:100%;height:42px;border:1.5px solid var(--line);border-radius:var(--radius-s);padding:0 12px;background:#fff;font-weight:500;font-size:14px;transition:border-color .15s}
+.fld textarea{height:auto;padding:10px 12px;resize:vertical;line-height:1.45}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--plate);outline:none}
+.fld.bad input,.fld.bad select,.fld.bad textarea{border-color:var(--red);background:#FFF6F6}
+.fld .msg{font-size:11.5px;color:var(--red);margin-top:5px;font-weight:600;display:none}
+.fld.bad .msg{display:block}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
+.swatch{width:30px;height:30px;border-radius:8px;border:2px solid var(--line);cursor:pointer;position:relative;transition:transform .12s;padding:0}
+.swatch:hover{transform:scale(1.08)}
+.swatch.on{border-color:var(--ink)}
+.swatch.on::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;text-shadow:0 0 3px rgba(0,0,0,.6)}
+.feat-pick-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.feat-pick{padding:7px 13px;border:1.5px solid var(--line);background:#fff;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--ink2);transition:all .15s}
+.feat-pick:hover{border-color:var(--ink)}
+.feat-pick.on{background:#FFF5F5;border-color:var(--red);color:var(--red)}
+.sell-aside h4{font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+.sell-preview-card{pointer-events:none}
+.sell-hint{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.sell-hint .h-deal{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13.5px;margin-bottom:6px}
+.sell-hint .h-deal .d{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.sell-hint.great .h-deal{color:var(--green)}
+.sell-hint.good .h-deal{color:var(--plate)}
+.sell-hint.fair .h-deal{color:var(--amber)}
+.sell-hint p{font-size:12px;color:var(--ink3);line-height:1.5}
+.sell-foot{display:flex;gap:10px;justify-content:flex-end;padding:16px 26px;border-top:1px solid var(--line);background:#fff;flex-wrap:wrap}
+.btn-line{padding:0 20px;height:46px;border:1.5px solid var(--line);border-radius:var(--radius-s);font-weight:700;font-size:14px;color:var(--ink2);background:#fff;transition:all .15s}
+.btn-line:hover{border-color:var(--ink);color:var(--ink)}
+.btn-primary{padding:0 26px;height:46px;background:var(--red);color:#fff;border-radius:var(--radius-s);font-weight:700;font-size:14.5px;transition:background .15s}
+.btn-primary:hover{background:var(--red-dark)}
+.badge-mine{position:absolute;top:10px;left:10px;background:var(--plate);color:#fff;padding:5px 11px;border-radius:999px;font-size:11.5px;font-weight:700}
+/* owner manage box in detail modal */
+.owner-box{background:#E7F0FB;border:1px solid #BFD6F2;border-radius:var(--radius);padding:18px}
+.owner-box .ob-t{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:var(--plate);margin-bottom:5px}
+.owner-box p{font-size:12.5px;color:var(--ink2);margin-bottom:14px;line-height:1.5}
+.owner-acts{display:flex;gap:8px}
+.btn-edit{flex:1;height:42px;border:1.5px solid var(--ink);border-radius:var(--radius-s);font-weight:700;font-size:13.5px;background:#fff;transition:all .15s}
+.btn-edit:hover{background:var(--ink);color:#fff}
+.btn-del{flex:1;height:42px;border:1.5px solid var(--red);color:var(--red);border-radius:var(--radius-s);font-weight:700;font-size:13.5px;background:#fff;transition:all .15s}
+.btn-del:hover{background:var(--red);color:#fff}
+.m-desc{margin-top:16px;font-size:14px;color:var(--ink2);line-height:1.6;white-space:pre-wrap}
+/* info modal */
+.info-modal{max-width:640px}
+.info-modal .info-in{padding:30px 30px 34px}
+.info-modal .info-eyebrow{font-family:var(--font-m);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.info-modal h2{font-family:var(--font-d);font-size:26px;font-weight:900;letter-spacing:-.015em;margin-bottom:14px;line-height:1.12}
+.info-modal p{color:var(--ink2);font-size:14px;line-height:1.6;margin-bottom:12px}
+.info-modal ul{margin:0 0 14px 18px;color:var(--ink2);font-size:14px;line-height:1.7}
+.info-contact{display:flex;flex-direction:column;gap:9px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:4px 0 6px;font-size:14px;font-weight:700}
+.info-contact span{color:var(--ink3);font-weight:500;font-size:12px;display:block;margin-bottom:1px}
+/* photo upload */
+.photo-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1.5px dashed var(--line);border-radius:var(--radius-s);padding:20px 14px;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.photo-drop:hover,.photo-drop.drag{border-color:var(--red);background:#FFF6F6}
+.photo-drop .pd-ic{font-size:24px;line-height:1}
+.photo-drop .pd-t{font-weight:700;font-size:13.5px;color:var(--ink2)}
+.photo-drop .pd-s{font-size:11.5px;color:var(--ink3)}
+.photo-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.photo-thumb{position:relative;width:86px;height:60px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-thumb>button{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(21,23,28,.72);color:#fff;font-size:10px;line-height:1;display:flex;align-items:center;justify-content:center}
+.photo-thumb>button:hover{background:var(--red)}
+.photo-thumb .cover-tag{position:absolute;bottom:0;left:0;right:0;background:rgba(0,61,165,.82);color:#fff;font-size:8.5px;font-weight:700;text-align:center;padding:2px 0;letter-spacing:.08em}
+/* photos on cards / gallery */
+.card-img .card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .25s}
+.card:hover .card-img .card-photo{transform:scale(1.05)}
+.m-stage{position:relative}
+.m-stage .m-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.m-thumbs button img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+.thumb-photo{width:100%;height:100%;object-fit:cover;border-radius:6px;display:block}
+.cmp-thumb .thumb-photo{width:52px;height:32px}
 </style>
 </head>
 <body>
@@ -356,7 +448,7 @@ a{color:inherit;text-decoration:none}
         <span class="lbl">Të preferuarat</span>
         <span class="fav-count zero" id="favCount">0</span>
       </button>
-      <a href="#shit" class="btn-sell">+ Shit makinën</a>
+      <a href="#shit" class="btn-sell" id="btnSellHdr">+ Shit makinën</a>
     </div>
   </div>
 </header>
@@ -571,6 +663,7 @@ a{color:inherit;text-decoration:none}
         <span>Vlera e parashikuar e tregut</span>
         <div class="rng" id="valRange">€12,400 – €14,100</div>
       </div>
+      <button type="button" class="btn-val" id="btnPublishListing" style="background:transparent;border:1.5px solid rgba(255,255,255,.35);color:#fff">Ose publiko shpalljen direkt →</button>
     </form>
   </div>
 </section>
@@ -589,8 +682,8 @@ a{color:inherit;text-decoration:none}
       <h4>Blej</h4>
       <ul>
         <li><a href="#listings">Makina të përdorura</a></li>
-        <li><a href="#listings">Makina të reja</a></li>
-        <li><a href="#listings">Makina elektrike</a></li>
+        <li><a href="#listings" data-foot="new">Makina të reja</a></li>
+        <li><a href="#listings" data-foot="electric">Makina elektrike</a></li>
         <li><a href="#financim">Financimi</a></li>
       </ul>
     </div>
@@ -598,17 +691,17 @@ a{color:inherit;text-decoration:none}
       <h4>Shit</h4>
       <ul>
         <li><a href="#shit">Vlerëso makinën</a></li>
-        <li><a href="#shit">Publiko shpallje</a></li>
-        <li><a href="#shit">Për koncesionarët</a></li>
+        <li><a href="#shit" data-foot="sell">Publiko shpallje</a></li>
+        <li><a href="#shit" data-foot="dealers">Për koncesionarët</a></li>
       </ul>
     </div>
     <div>
       <h4>Kompania</h4>
       <ul>
-        <li><a href="#">Rreth nesh</a></li>
-        <li><a href="#">Kontakti</a></li>
-        <li><a href="#">Kushtet e përdorimit</a></li>
-        <li><a href="#">Privatësia</a></li>
+        <li><a href="#" data-info="about">Rreth nesh</a></li>
+        <li><a href="#" data-info="contact">Kontakti</a></li>
+        <li><a href="#" data-info="terms">Kushtet e përdorimit</a></li>
+        <li><a href="#" data-info="privacy">Privatësia</a></li>
       </ul>
     </div>
   </div>
@@ -639,6 +732,82 @@ a{color:inherit;text-decoration:none}
       <h2 style="font-family:var(--font-d);font-size:25px;font-weight:900;letter-spacing:-.01em">Krahaso makinat tuaja</h2>
     </div>
     <div class="cmp-table-wrap" id="cmpTableWrap"></div>
+  </div>
+</div>
+
+<!-- ======= SELL / CREATE LISTING MODAL ======= -->
+<div class="overlay" id="sellOverlay" role="dialog" aria-modal="true" aria-label="Publiko shpallje">
+  <div class="modal sell-modal">
+    <button class="modal-close" data-close="sellOverlay" aria-label="Mbyll">✕</button>
+    <div class="sell-head">
+      <div class="se">Shit makinën tënde</div>
+      <h2 id="sellTitle">Publiko shpalljen tënde</h2>
+      <p>Plotëso të dhënat — shpallja shfaqet menjëherë në treg, falas. Fushat me <span style="color:var(--red)">*</span> janë të detyrueshme.</p>
+    </div>
+    <form id="sellForm" novalidate>
+      <div class="sell-grid">
+        <div class="sell-form">
+          <div class="sl-sec">Makina</div>
+          <div class="sl-row">
+            <div class="fld"><label for="slMake">Marka <span class="req">*</span></label><input id="slMake" list="dlMakes" autocomplete="off" placeholder="p.sh. BMW"><datalist id="dlMakes"></datalist><span class="msg">Shkruaj markën</span></div>
+            <div class="fld"><label for="slModel">Modeli <span class="req">*</span></label><input id="slModel" autocomplete="off" placeholder="p.sh. 320d xDrive"><span class="msg">Shkruaj modelin</span></div>
+          </div>
+          <div class="sl-row three">
+            <div class="fld"><label for="slYear">Viti <span class="req">*</span></label><select id="slYear"></select><span class="msg">Zgjidh vitin</span></div>
+            <div class="fld"><label for="slKm">Kilometrazhi <span class="req">*</span></label><input id="slKm" type="number" min="0" step="1000" placeholder="km"><span class="msg">Shkruaj km-të</span></div>
+            <div class="fld"><label for="slPrice">Çmimi (€) <span class="req">*</span></label><input id="slPrice" type="number" min="0" step="100" placeholder="€"><span class="msg">Shkruaj çmimin</span></div>
+          </div>
+          <div class="sl-sec">Specifikat</div>
+          <div class="sl-row three">
+            <div class="fld"><label for="slFuel">Karburanti <span class="req">*</span></label><select id="slFuel"></select><span class="msg">Zgjidh</span></div>
+            <div class="fld"><label for="slTrans">Transmisioni <span class="req">*</span></label><select id="slTrans"></select><span class="msg">Zgjidh</span></div>
+            <div class="fld"><label for="slBody">Karroceria <span class="req">*</span></label><select id="slBody"></select><span class="msg">Zgjidh</span></div>
+          </div>
+          <div class="sl-row three">
+            <div class="fld"><label for="slHp">Fuqia (kf)</label><input id="slHp" type="number" min="0" step="5" placeholder="opsionale"></div>
+            <div class="fld"><label for="slDrive">Traksioni</label><select id="slDrive"><option value="Para">Para</option><option value="Prapa">Prapa</option><option value="4x4">4x4</option></select></div>
+            <div class="fld"><label for="slCity">Qyteti <span class="req">*</span></label><select id="slCity"></select><span class="msg">Zgjidh</span></div>
+          </div>
+          <div class="fld full" style="margin-bottom:12px"><label>Ngjyra</label><div class="swatches" id="slColors"></div></div>
+          <div class="fld full"><label for="slDesc">Përshkrimi</label><textarea id="slDesc" rows="3" placeholder="Gjendja, historiku i shërbimeve, pajisje shtesë, arsyeja e shitjes..."></textarea></div>
+          <div class="sl-sec">Fotot</div>
+          <label class="photo-drop" id="photoDrop">
+            <input type="file" id="slPhotoInput" accept="image/*" multiple hidden>
+            <span class="pd-ic">📷</span>
+            <span class="pd-t">Kliko ose tërhiq fotot këtu</span>
+            <span class="pd-s">JPG/PNG · deri në 6 foto · e para është kryesore</span>
+          </label>
+          <div class="photo-grid" id="slPhotos"></div>
+          <div class="sl-sec">Pajisjet</div>
+          <div class="feat-pick-wrap" id="slFeats"></div>
+          <div class="sl-sec">Kontakti yt</div>
+          <div class="sl-row">
+            <div class="fld"><label for="slName">Emri <span class="req">*</span></label><input id="slName" autocomplete="name" placeholder="Emri juaj"><span class="msg">Shkruaj emrin</span></div>
+            <div class="fld"><label for="slPhone">Telefoni <span class="req">*</span></label><input id="slPhone" type="tel" autocomplete="tel" placeholder="+355 ..."><span class="msg">Numër i pavlefshëm</span></div>
+          </div>
+        </div>
+        <aside class="sell-aside">
+          <h4>Si do të duket shpallja</h4>
+          <div id="sellPreview"></div>
+          <div class="sell-hint" id="sellHint" style="display:none">
+            <div class="h-deal"><span class="d"></span><span id="hintDeal"></span></div>
+            <p id="hintText"></p>
+          </div>
+        </aside>
+      </div>
+      <div class="sell-foot">
+        <button type="button" class="btn-line" data-close="sellOverlay">Anulo</button>
+        <button type="submit" class="btn-primary" id="slPublish">Publiko shpalljen →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ======= INFO MODAL ======= -->
+<div class="overlay" id="infoOverlay" role="dialog" aria-modal="true" aria-label="Informacion">
+  <div class="modal info-modal">
+    <button class="modal-close" data-close="infoOverlay" aria-label="Mbyll">✕</button>
+    <div class="info-in" id="infoBody"></div>
   </div>
 </div>
 
@@ -793,7 +962,7 @@ function bodyIcon(b){
 const state={
   make:"",model:"",priceMax:null,priceMin:null,yearMin:null,yearMax:null,
   bodies:new Set(),fuels:new Set(),trans:new Set(),cities:new Set(),deals:new Set(),
-  kmMax:null,sort:"rec",favOnly:false,shown:12
+  kmMax:null,sort:"rec",favOnly:false,mineOnly:false,shown:12
 };
 const favs=new Set(), cmp=new Set();
 const fmt=n=>"€"+n.toLocaleString("de-DE");
@@ -815,7 +984,8 @@ function filtered(){
     (!state.trans.size||state.trans.has(c.trans))&&
     (!state.cities.size||state.cities.has(c.city))&&
     (!state.deals.size||state.deals.has(c.deal))&&
-    (!state.favOnly||favs.has(c.id))
+    (!state.favOnly||favs.has(c.id))&&
+    (!state.mineOnly||c.mine)
   );
   const S={
     "price-asc":(a,b)=>a.price-b.price,
@@ -829,10 +999,10 @@ function filtered(){
 }
 
 function cardHTML(c){
-  const badge=c.isNew?`<span class="badge-new">E RE · 2026</span>`:`<span class="badge-deal ${c.deal}"><span class="d"></span>${DEAL_LBL[c.deal]}</span>`;
+  const badge=c.mine?`<span class="badge-mine">★ Shpallja juaj</span>`:c.isNew?`<span class="badge-new">E RE · 2026</span>`:`<span class="badge-deal ${c.deal}"><span class="d"></span>${DEAL_LBL[c.deal]}</span>`;
   return `<article class="card" data-id="${c.id}">
     <div class="card-img" style="background:linear-gradient(165deg,${c.scene[0]},${c.scene[1]})">
-      ${carSVG(c)}
+      ${cardMedia(c)}
       ${badge}
       ${c.drop?`<span class="badge-drop">↓ Ulje ${fmt(c.drop)}</span>`:""}
       <button class="btn-heart ${favs.has(c.id)?"on":""}" data-fav="${c.id}" aria-label="Shto te të preferuarat">
@@ -888,6 +1058,7 @@ function renderActiveFilters(){
   state.cities.forEach(ct=>add(ct,()=>{state.cities.delete(ct);syncChecks()}));
   state.deals.forEach(d=>add(DEAL_LBL[d],()=>{state.deals.delete(d);syncChecks()}));
   if(state.favOnly)add("Vetëm të preferuarat",()=>{state.favOnly=false});
+  if(state.mineOnly)add("Shpalljet e mia",()=>{state.mineOnly=false;const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.classList.remove("on")});
   const el=document.getElementById("activeFilters");
   el.innerHTML=tags.map((t,i)=>`<span class="af-tag">${t.lbl}<button data-af="${i}" aria-label="Hiq filtrin">✕</button></span>`).join("");
   el.querySelectorAll("[data-af]").forEach(btn=>btn.addEventListener("click",()=>{tags[+btn.dataset.af].fn();render()}));
@@ -941,7 +1112,7 @@ function syncSearchUI(){
 function resetAll(){
   state.make="";state.model="";state.priceMax=null;state.priceMin=null;state.yearMin=null;state.yearMax=null;state.kmMax=null;
   state.bodies.clear();state.fuels.clear();state.trans.clear();state.cities.clear();state.deals.clear();
-  state.favOnly=false;state.shown=12;
+  state.favOnly=false;state.mineOnly=false;state.shown=12;
   ["fPriceMin","fPriceMax","fYearMin","fYearMax"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("fKm").value="";
   document.querySelectorAll("#quickChips .chip").forEach(c=>c.classList.remove("on"));
@@ -984,9 +1155,10 @@ document.getElementById("quickChips").addEventListener("click",e=>{
     suv:()=>on?state.bodies.add("suv"):state.bodies.delete("suv"),
     nen15:()=>state.priceMax=on?15000:null,
     automatik:()=>on?state.trans.add("Automatik"):state.trans.delete("Automatik"),
-    cmim:()=>on?state.deals.add("great"):state.deals.delete("great")
+    cmim:()=>on?state.deals.add("great"):state.deals.delete("great"),
+    mine:()=>state.mineOnly=on
   };
-  apply[q]();syncChecks();syncSearchUI();state.shown=12;render();
+  if(apply[q])apply[q]();syncChecks();syncSearchUI();state.shown=12;render();
 });
 
 /* ================= GRID EVENTS (delegation) ================= */
@@ -1013,6 +1185,7 @@ function toggleFav(id){
   const fc=document.getElementById("favCount");
   fc.textContent=favs.size;fc.classList.toggle("zero",!favs.size);
   document.querySelectorAll(`[data-fav="${id}"]`).forEach(b=>b.classList.toggle("on",!was));
+  saveFavs();
   toast(was?"U hoq nga të preferuarat":"U shtua te të preferuarat ♥");
   if(state.favOnly)render();
 }
@@ -1032,7 +1205,7 @@ function renderTray(){
   document.getElementById("cmpTrayLbl").textContent=`Krahaso (${cmp.size}/3)`;
   document.getElementById("cmpThumbs").innerHTML=[...cmp].map(id=>{
     const c=CARS.find(x=>x.id===id);
-    return `<span class="cmp-thumb" style="background:linear-gradient(160deg,${c.scene[0]},${c.scene[1]})">${carSVG(c,44)}<button data-rm="${id}" aria-label="Hiq">✕</button></span>`;
+    return `<span class="cmp-thumb" style="background:linear-gradient(160deg,${c.scene[0]},${c.scene[1]})">${carThumb(c,44)}<button data-rm="${id}" aria-label="Hiq">✕</button></span>`;
   }).join("");
   document.getElementById("btnCmpGo").disabled=cmp.size<2;
   document.querySelectorAll("[data-rm]").forEach(b=>b.addEventListener("click",ev=>{ev.stopPropagation();toggleCmp(+b.dataset.rm)}));
@@ -1048,7 +1221,7 @@ function openCompare(){
   const bp=best(cars.map(c=>c.price)),bk=best(cars.map(c=>c.km)),by=best(cars.map(c=>c.year),false),bh=best(cars.map(c=>c.hp),false),bm=best(cars.map(c=>monthly(c.price)));
   const row=(lbl,fn,marks)=>`<tr><th>${lbl}</th>${cars.map((c,i)=>`<td class="${marks&&marks[i]?"best":""}">${fn(c)}</td>`).join("")}</tr>`;
   document.getElementById("cmpTableWrap").innerHTML=`<table class="cmp-table">
-    <tr class="cmp-car-head"><th></th>${cars.map(c=>`<td><div class="ch"><span class="ci" style="background:linear-gradient(160deg,${c.scene[0]},${c.scene[1]})">${carSVG(c,100)}</span><b>${c.year} ${c.make} ${c.model}</b></div></td>`).join("")}</tr>
+    <tr class="cmp-car-head"><th></th>${cars.map(c=>`<td><div class="ch"><span class="ci" style="background:linear-gradient(160deg,${c.scene[0]},${c.scene[1]})">${carThumb(c,100)}</span><b>${c.year} ${c.make} ${c.model}</b></div></td>`).join("")}</tr>
     ${row("Çmimi",c=>fmt(c.price),bp)}
     ${row("Kësti mujor (≈)",c=>fmt(monthly(c.price))+"/muaj",bm)}
     ${row("Vlerësimi i çmimit",c=>DEAL_LBL[c.deal])}
@@ -1083,12 +1256,44 @@ function openDetail(id){
   const saving=c.market-c.price;
   const sim=CARS.filter(x=>x.id!==id&&(x.body===c.body||x.make===c.make)&&Math.abs(x.price-c.price)<c.price*.35)
     .sort((a,b)=>Math.abs(a.price-c.price)-Math.abs(b.price-c.price)).slice(0,3);
-  const scenes=[
+  const photoScenes=(c.photos||[]).map((p,i)=>({ic:"🖼️",t:"Foto "+(i+1),html:`<img class="m-photo" src="${p}" alt="${c.year} ${c.make} ${c.model}">`,photo:p}));
+  const scenes=[...photoScenes,
     {ic:"🚗",t:"Pamja anësore",html:carSVG(c,420)},
     {ic:"🔄",t:"Pamja e kthyer",html:`<div style="transform:scaleX(-1)">${carSVG(c,420)}</div>`,cls:""},
     {ic:"⚙️",t:"Disku",cls:"scene-wheel",html:wheelSVG(c)},
     {ic:"🎛️",t:"Kabina",cls:"scene-dash",html:dashSVG(c)}
   ];
+  const sideBlock=c.mine?`
+        <div class="owner-box">
+          <div class="ob-t">★ Shpallja juaj</div>
+          <p>Publikuar nga <b>${c.dealer.n}</b>${c.phone?" · "+c.phone:""}. Menaxho ose përditëso të dhënat.</p>
+          <div class="owner-acts">
+            <button class="btn-edit" data-edit="${c.id}">✎ Ndrysho</button>
+            <button class="btn-del" data-del="${c.id}">🗑 Fshi</button>
+          </div>
+        </div>`:`
+        <div class="dealer">
+          <div class="d-name">
+            <span class="d-logo">${c.dealer.t}</span>
+            <span><b>${c.dealer.n}</b><span>Koncesionar i verifikuar ✓</span></span>
+          </div>
+          <div class="d-meta">
+            <span>📍 ${c.dealer.c}, Shqipëri</span>
+            <span>⭐ ${c.dealer.r} · ${c.dealer.v} vlerësime</span>
+            <span>🕐 Hap sot deri në 19:00</span>
+          </div>
+          <button class="btn-contact" id="btnContact">Kontakto shitësin</button>
+          <button class="btn-call" onclick="toast('Numri u kopjua: +355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0')">+355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0</button>
+          <form class="contact-form" id="contactForm">
+            <input type="text" placeholder="Emri juaj *" required>
+            <input type="tel" placeholder="Telefoni *" required>
+            <textarea rows="3">Përshëndetje, jam i interesuar për ${c.year} ${c.make} ${c.model} (${fmt(c.price)}). A është ende në shitje?</textarea>
+            <button type="submit" class="btn-contact" style="margin:0">Dërgo mesazhin</button>
+          </form>
+        </div>`;
+  const descBlock=c.desc?`<div class="feat-wrap"><h4>Përshkrimi</h4><div class="m-desc">${c.desc}</div></div>`:"";
+  const featsBlock=c.feats&&c.feats.length?`<div class="feat-wrap"><h4>Pajisjet kryesore</h4><div class="feats">${c.feats.map(f=>`<span class="feat">${f}</span>`).join("")}</div></div>`:"";
+  const reviewsBlock=c.reviews&&c.reviews.length?`<div class="feat-wrap"><h4>Vlerësime për shitësin</h4>${c.reviews.map(r=>`<div class="review"><div class="r-top"><span>${r.n}</span><span class="stars">${"★".repeat(r.s)}${"☆".repeat(5-r.s)}</span></div><p>${r.t}</p></div>`).join("")}</div>`:(c.mine?`<div class="feat-wrap"><h4>Vlerësime për shitësin</h4><div class="review"><p>Shpallje e re — ende pa vlerësime. Ato shfaqen pasi blerësit të kontaktojnë.</p></div></div>`:"");
   document.getElementById("detailModal").innerHTML=`
     <button class="modal-close" data-close="detailOverlay" aria-label="Mbyll">✕</button>
     <div class="m-gallery">
@@ -1096,7 +1301,7 @@ function openDetail(id){
         <div class="scene-wrap" style="display:contents">${scenes[0].html}</div>
       </div>
       <div class="m-thumbs" role="tablist" aria-label="Fotot">
-        ${scenes.map((s,i)=>`<button class="${i===0?"on":""}" data-scene="${i}" title="${s.t}" role="tab" aria-selected="${i===0}">${s.ic}</button>`).join("")}
+        ${scenes.map((s,i)=>`<button class="${i===0?"on":""}" data-scene="${i}" title="${s.t}" role="tab" aria-selected="${i===0}">${s.photo?`<img src="${s.photo}" alt="">`:s.ic}</button>`).join("")}
       </div>
       <div class="m-plate" aria-label="Targa"><span class="band"><span>★</span><b>AL</b></span><span class="num">${c.plate}</span></div>
     </div>
@@ -1124,35 +1329,12 @@ function openDetail(id){
              ["Konsumi",c.cons],["Traksioni",c.drive],["Dyer / Ulëse",c.doors+" / "+c.seats]]
             .map(([k,v])=>`<div class="spec"><span>${k}</span><b>${v}</b></div>`).join("")}
         </div>
-        <div class="feat-wrap">
-          <h4>Pajisjet kryesore</h4>
-          <div class="feats">${c.feats.map(f=>`<span class="feat">${f}</span>`).join("")}</div>
-        </div>
-        <div class="feat-wrap">
-          <h4>Vlerësime për shitësin</h4>
-          ${c.reviews.map(r=>`<div class="review"><div class="r-top"><span>${r.n}</span><span class="stars">${"★".repeat(r.s)}${"☆".repeat(5-r.s)}</span></div><p>${r.t}</p></div>`).join("")}
-        </div>
+        ${descBlock}
+        ${featsBlock}
+        ${reviewsBlock}
       </div>
       <aside class="m-side">
-        <div class="dealer">
-          <div class="d-name">
-            <span class="d-logo">${c.dealer.t}</span>
-            <span><b>${c.dealer.n}</b><span>Koncesionar i verifikuar ✓</span></span>
-          </div>
-          <div class="d-meta">
-            <span>📍 ${c.dealer.c}, Shqipëri</span>
-            <span>⭐ ${c.dealer.r} · ${c.dealer.v} vlerësime</span>
-            <span>🕐 Hap sot deri në 19:00</span>
-          </div>
-          <button class="btn-contact" id="btnContact">Kontakto shitësin</button>
-          <button class="btn-call" onclick="toast('Numri u kopjua: +355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0')">+355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0</button>
-          <form class="contact-form" id="contactForm">
-            <input type="text" placeholder="Emri juaj *" required>
-            <input type="tel" placeholder="Telefoni *" required>
-            <textarea rows="3">Përshëndetje, jam i interesuar për ${c.year} ${c.make} ${c.model} (${fmt(c.price)}). A është ende në shitje?</textarea>
-            <button type="submit" class="btn-contact" style="margin:0">Dërgo mesazhin</button>
-          </form>
-        </div>
+        ${sideBlock}
         <div class="m-fin">
           <h4>Financimi i shpejtë</h4>
           <div class="row"><span>Paradhënia</span><output id="mfDownOut">20%</output></div>
@@ -1169,7 +1351,7 @@ function openDetail(id){
     </div>
     ${sim.length?`<div class="similar"><h4>Makina të ngjashme</h4><div class="sim-row">
       ${sim.map(s=>`<button class="sim-card" data-sim="${s.id}">
-        <span class="si" style="background:linear-gradient(160deg,${s.scene[0]},${s.scene[1]})">${carSVG(s,64)}</span>
+        <span class="si" style="background:linear-gradient(160deg,${s.scene[0]},${s.scene[1]})">${carThumb(s,64)}</span>
         <span><b>${s.year} ${s.make} ${s.model}</b><span>${fmt(s.price)} · ${s.isNew?"0 km":fmtKm(s.km)}</span></span>
       </button>`).join("")}
     </div></div>`:""}`;
@@ -1183,12 +1365,18 @@ function openDetail(id){
     st.className="m-stage "+(s.cls||"");
     st.querySelector(".scene-wrap").innerHTML=s.html;
   }));
-  modal.querySelector("#btnContact").addEventListener("click",()=>modal.querySelector("#contactForm").classList.toggle("show"));
-  modal.querySelector("#contactForm").addEventListener("submit",e=>{
+  const bContact=modal.querySelector("#btnContact");
+  if(bContact)bContact.addEventListener("click",()=>modal.querySelector("#contactForm").classList.toggle("show"));
+  const cForm=modal.querySelector("#contactForm");
+  if(cForm)cForm.addEventListener("submit",e=>{
     e.preventDefault();
     closeOverlay("detailOverlay");
     toast("Mesazhi u dërgua! "+c.dealer.n+" do t'ju kontaktojë së shpejti.");
   });
+  const bEdit=modal.querySelector("[data-edit]");
+  if(bEdit)bEdit.addEventListener("click",()=>{closeOverlay("detailOverlay");openSell(null,c.id)});
+  const bDel=modal.querySelector("[data-del]");
+  if(bDel)bDel.addEventListener("click",()=>deleteListing(c.id));
   const upd=()=>{
     const d=+modal.querySelector("#mfDown").value, t=+modal.querySelector("#mfTerm").value;
     modal.querySelector("#mfDownOut").textContent=d+"%";
@@ -1228,10 +1416,10 @@ function dashSVG(c){
 /* ================= OVERLAYS ================= */
 function openOverlay(id){document.getElementById(id).classList.add("show");document.body.style.overflow="hidden"}
 function closeOverlay(id){document.getElementById(id).classList.remove("show");document.body.style.overflow=""}
-["detailOverlay","cmpOverlay"].forEach(id=>{
+["detailOverlay","cmpOverlay","infoOverlay"].forEach(id=>{
   document.getElementById(id).addEventListener("click",e=>{if(e.target.id===id)closeOverlay(id)});
 });
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeOverlay("detailOverlay");closeOverlay("cmpOverlay")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeOverlay("detailOverlay");closeOverlay("cmpOverlay");closeOverlay("infoOverlay")}});
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeOverlay(b.dataset.close)));
 
 /* ================= FINANCING SECTION ================= */
@@ -1280,11 +1468,314 @@ function toast(msg){
   toastT=setTimeout(()=>t.classList.remove("show"),2800);
 }
 
+/* ================= PERSISTENCE ================= */
+const LS_LISTINGS="vetura_listings_v1", LS_FAVS="vetura_favs_v1";
+function loadListings(){try{return JSON.parse(localStorage.getItem(LS_LISTINGS))||[]}catch(e){return[]}}
+function saveListings(a){try{localStorage.setItem(LS_LISTINGS,JSON.stringify(a));return true}catch(e){return false}}
+function loadFavIds(){try{return JSON.parse(localStorage.getItem(LS_FAVS))||[]}catch(e){return[]}}
+function saveFavs(){try{localStorage.setItem(LS_FAVS,JSON.stringify([...favs]))}catch(e){}}
+let myListings=[];
+function ensureMakeModel(make,model){if(!make)return;if(!MAKES[make])MAKES[make]=[];if(model&&!MAKES[make].includes(model))MAKES[make].push(model)}
+function integrateListings(){
+  myListings=loadListings();
+  myListings.forEach(c=>{ensureMakeModel(c.make,c.model);CARS.unshift(c)});
+}
+
+/* ================= STATS / COUNT REFRESH ================= */
+function refreshStats(){
+  document.getElementById("statTotal").textContent=CARS.length.toLocaleString("de-DE");
+  document.getElementById("statDeals").textContent=CARS.filter(c=>c.deal==="great").length;
+}
+function updateFavCount(){const fc=document.getElementById("favCount");fc.textContent=favs.size;fc.classList.toggle("zero",!favs.size)}
+function updateFilterCounts(){
+  const M={fuels:"fuel",trans:"trans",cities:"city",deals:"deal"};
+  document.querySelectorAll(".f-check input[data-set]").forEach(cb=>{
+    const field=M[cb.dataset.set];if(!field)return;
+    const n=CARS.reduce((a,c)=>c[field]===cb.value?a+1:a,0);
+    const span=cb.parentElement.querySelector(".n");if(span)span.textContent=n;
+  });
+}
+function rebuildMakeSelects(){
+  const keys=Object.keys(MAKES).sort();
+  const sMake=document.getElementById("sMake");
+  sMake.innerHTML='<option value="">Të gjitha markat</option>';keys.forEach(m=>sMake.add(new Option(m,m)));sMake.value=state.make;
+  const vMake=document.getElementById("vMake");
+  vMake.innerHTML='<option value="">Marka *</option>';keys.forEach(m=>vMake.add(new Option(m,m)));
+  const dl=document.getElementById("dlMakes");if(dl)dl.innerHTML=keys.map(m=>`<option value="${m}"></option>`).join("");
+  buildModelSelect();
+}
+function ensureMineChip(){
+  if(!myListings.length)return;
+  const wrap=document.getElementById("quickChips");
+  if(wrap.querySelector('[data-q="mine"]'))return;
+  const b=document.createElement("button");b.className="chip";b.dataset.q="mine";b.textContent="★ Shpalljet e mia";
+  wrap.appendChild(b);
+}
+
+/* ================= COMPOSE A CAR FROM LISTING DATA ================= */
+const TIER={"Mercedes-Benz":42,"BMW":40,"Audi":38,"Tesla":44,"Volvo":36,"Volkswagen":30,"Toyota":27,"Skoda":26,"Hyundai":24,"Ford":24,"Peugeot":23,"Renault":21};
+function initials(s){return (s||"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("")||"SH"}
+function composeCar(d,id,scene,plate){
+  const make=d.make||"Marka",model=d.model||"Modeli";
+  const year=d.year||2026,age=Math.max(0,2026-year),km=Math.max(0,d.km||0);
+  const tier=TIER[make]||25;
+  const market=Math.max(2000,Math.round(tier*1000*Math.pow(.9,age)*(1-Math.min(km,300000)/900000)/100)*100);
+  const price=d.price||market;
+  const diff=(price-market)/market;
+  const deal=diff<-.06?"great":diff<.02?"good":"fair";
+  const elec=d.fuel==="Elektrik";
+  const isNew=year>=2026&&km<=300;
+  const hp=d.hp||(elec?300:150);
+  const fuel=d.fuel||"Benzinë";
+  const engine=elec?Math.round(hp*0.18)+" kWh":Math.max(1,Math.min(3,hp/100)).toFixed(1)+"L "+(fuel==="Naftë"?"TDI":"TSI");
+  const cons=elec?"16 kWh/100km":(5+hp/40).toFixed(1)+" L/100km";
+  const color=d.color||COLORS[0];
+  return {
+    id,make,model,year,km,fuel,trans:d.trans||"Automatik",price,market,deal,
+    body:d.body||"sedan",hp,engine,cons,drive:d.drive||"Para",doors:5,seats:5,
+    color,city:d.city||"Tiranë",
+    dealer:{n:d.name||"Shitës privat",c:d.city||"Tiranë",r:"5.0",v:0,t:initials(d.name||"Shitës Privat"),mine:true,phone:d.phone||""},
+    plate:plate||"AA 000 AA",isNew,drop:0,scene:scene||SCENES[0],
+    feats:d.feats||[],reviews:[],rating:"—",desc:d.desc||"",mine:true,phone:d.phone||"",
+    photos:d.photos||[]
+  };
+}
+
+/* ================= MEDIA HELPERS (photo or SVG) ================= */
+function cardMedia(c){return c.photos&&c.photos.length?`<img class="card-photo" src="${c.photos[0]}" alt="${c.year} ${c.make} ${c.model}">`:carSVG(c)}
+function carThumb(c,w){return c.photos&&c.photos.length?`<img class="thumb-photo" src="${c.photos[0]}" alt="">`:carSVG(c,w)}
+
+/* ================= PHOTO UPLOAD ================= */
+const MAX_PHOTOS=6;
+function compressImage(file,maxDim,quality){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=reject;
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=reject;
+      img.onload=()=>{
+        let w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+        if(w>h&&w>maxDim){h=Math.round(h*maxDim/w);w=maxDim;}
+        else if(h>=w&&h>maxDim){w=Math.round(w*maxDim/h);h=maxDim;}
+        const cv=document.createElement("canvas");cv.width=w;cv.height=h;
+        cv.getContext("2d").drawImage(img,0,0,w,h);
+        try{resolve(cv.toDataURL("image/jpeg",quality));}catch(e){reject(e);}
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+async function addPhotos(fileList){
+  const files=[...fileList].filter(f=>f.type&&f.type.startsWith("image/"));
+  if(!files.length){toast("Zgjidh një skedar imazhi");return;}
+  for(const f of files){
+    if(sellState.photos.length>=MAX_PHOTOS){toast("Maksimumi "+MAX_PHOTOS+" foto");break;}
+    try{sellState.photos.push(await compressImage(f,1000,0.72));renderPhotoThumbs();updatePreview();}
+    catch(e){toast("Një foto nuk u ngarkua dot");}
+  }
+}
+function renderPhotoThumbs(){
+  document.getElementById("slPhotos").innerHTML=sellState.photos.map((p,i)=>
+    `<div class="photo-thumb">${i===0?'<span class="cover-tag">KRYESORE</span>':""}<img src="${p}" alt=""><button type="button" data-rmphoto="${i}" aria-label="Hiq foton">✕</button></div>`).join("");
+}
+
+/* ================= SELL: BUILD / READ / VALIDATE / PREVIEW ================= */
+let sellBuilt=false;
+const sellState={editId:null,scene:null,plate:null,photos:[]};
+function buildSellOnce(){
+  if(sellBuilt)return;sellBuilt=true;
+  const fill=(id,first,items)=>{const s=document.getElementById(id);s.add(new Option(first,""));items.forEach(o=>Array.isArray(o)?s.add(new Option(o[1],o[0])):s.add(new Option(o,o)))};
+  const yr=document.getElementById("slYear");yr.add(new Option("Viti",""));for(let y=2026;y>=2008;y--)yr.add(new Option(y,y));
+  fill("slFuel","Karburanti",FUELS);
+  fill("slTrans","Transmisioni",["Automatik","Manual"]);
+  fill("slBody","Karroceria",BODIES);
+  fill("slCity","Qyteti",CITIES);
+  document.getElementById("dlMakes").innerHTML=Object.keys(MAKES).sort().map(m=>`<option value="${m}"></option>`).join("");
+  document.getElementById("slColors").innerHTML=COLORS.map((c,i)=>`<button type="button" class="swatch${i===0?" on":""}" data-color="${c[0]}" style="background:${c[1]}" title="${c[0]}" aria-label="${c[0]}"></button>`).join("");
+  document.getElementById("slFeats").innerHTML=FEATURES_POOL.map(f=>`<button type="button" class="feat-pick" data-feat="${f}">${f}</button>`).join("");
+  document.getElementById("slColors").addEventListener("click",e=>{const b=e.target.closest(".swatch");if(!b)return;document.querySelectorAll("#slColors .swatch").forEach(x=>x.classList.remove("on"));b.classList.add("on");updatePreview()});
+  document.getElementById("slFeats").addEventListener("click",e=>{const b=e.target.closest(".feat-pick");if(!b)return;b.classList.toggle("on");updatePreview()});
+  const pInput=document.getElementById("slPhotoInput");
+  pInput.addEventListener("change",()=>{addPhotos(pInput.files);pInput.value=""});
+  const pDrop=document.getElementById("photoDrop");
+  ["dragenter","dragover"].forEach(ev=>pDrop.addEventListener(ev,e=>{e.preventDefault();pDrop.classList.add("drag")}));
+  ["dragleave","dragend"].forEach(ev=>pDrop.addEventListener(ev,e=>{e.preventDefault();pDrop.classList.remove("drag")}));
+  pDrop.addEventListener("drop",e=>{e.preventDefault();pDrop.classList.remove("drag");if(e.dataTransfer&&e.dataTransfer.files)addPhotos(e.dataTransfer.files)});
+  document.getElementById("slPhotos").addEventListener("click",e=>{const b=e.target.closest("[data-rmphoto]");if(!b)return;sellState.photos.splice(+b.dataset.rmphoto,1);renderPhotoThumbs();updatePreview()});
+  const form=document.getElementById("sellForm");
+  form.addEventListener("input",e=>{const f=e.target.closest(".fld");if(f)f.classList.remove("bad");updatePreview()});
+  form.addEventListener("change",updatePreview);
+}
+function readSellForm(){
+  const v=id=>document.getElementById(id).value;
+  const clean=s=>s.replace(/[<>]/g,"").trim();
+  const cb=document.querySelector("#slColors .swatch.on");
+  const color=cb?COLORS.find(c=>c[0]===cb.dataset.color):COLORS[0];
+  return {
+    make:clean(v("slMake")),model:clean(v("slModel")),
+    year:v("slYear")?+v("slYear"):null,
+    km:v("slKm")!==""?Math.max(0,Math.round(+v("slKm"))):null,
+    price:v("slPrice")!==""?Math.max(0,Math.round(+v("slPrice"))):null,
+    fuel:v("slFuel"),trans:v("slTrans"),body:v("slBody"),
+    hp:v("slHp")!==""?+v("slHp"):null,drive:v("slDrive"),city:v("slCity"),color,
+    desc:clean(v("slDesc")),
+    feats:[...document.querySelectorAll("#slFeats .feat-pick.on")].map(b=>b.dataset.feat),
+    name:clean(v("slName")),phone:clean(v("slPhone"))
+  };
+}
+function validate(d){
+  const errs=[];
+  const req={slMake:d.make,slModel:d.model,slYear:d.year,slKm:d.km,slPrice:d.price,slFuel:d.fuel,slTrans:d.trans,slBody:d.body,slCity:d.city,slName:d.name,slPhone:d.phone};
+  Object.entries(req).forEach(([id,val])=>{if(val===""||val==null)errs.push(id)});
+  if(d.price!=null&&d.price<=0&&!errs.includes("slPrice"))errs.push("slPrice");
+  if(d.phone&&d.phone.replace(/\D/g,"").length<6&&!errs.includes("slPhone"))errs.push("slPhone");
+  return errs;
+}
+function setFieldError(id,on){const el=document.getElementById(id);if(el&&el.closest(".fld"))el.closest(".fld").classList.toggle("bad",on)}
+function updatePreview(){
+  const d=readSellForm();
+  d.photos=sellState.photos;
+  const c=composeCar(d,sellState.editId||0,sellState.scene,sellState.plate);
+  document.getElementById("sellPreview").innerHTML='<div class="sell-preview-card">'+cardHTML(c)+"</div>";
+  const hint=document.getElementById("sellHint");
+  if(d.make&&d.year&&d.km!=null&&d.price!=null&&d.price>0){
+    hint.style.display="";hint.className="sell-hint "+c.deal;
+    document.getElementById("hintDeal").textContent=DEAL_LBL[c.deal];
+    const diff=c.price-c.market;
+    document.getElementById("hintText").textContent=
+      (diff<0?fmt(-diff)+" nën vlerën e tregut":diff>0?fmt(diff)+" mbi vlerën e tregut":"pikërisht në vlerën e tregut")
+      +" (vlera e tregut ≈ "+fmt(c.market)+"). Kësti ≈ "+fmt(monthly(c.price))+"/muaj.";
+  } else hint.style.display="none";
+}
+function openSell(prefill,editId){
+  buildSellOnce();
+  const f=id=>document.getElementById(id);
+  ["slMake","slModel","slKm","slPrice","slHp","slDesc","slName","slPhone"].forEach(id=>f(id).value="");
+  ["slYear","slFuel","slTrans","slBody","slCity"].forEach(id=>f(id).selectedIndex=0);
+  f("slDrive").selectedIndex=0;
+  document.querySelectorAll("#slColors .swatch").forEach((x,i)=>x.classList.toggle("on",i===0));
+  document.querySelectorAll("#slFeats .feat-pick").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll("#sellForm .fld").forEach(x=>x.classList.remove("bad"));
+  sellState.photos=[];
+  sellState.editId=editId||null;
+  if(editId){
+    const c=CARS.find(x=>x.id===editId);
+    f("slMake").value=c.make;f("slModel").value=c.model;f("slYear").value=c.year;
+    f("slKm").value=c.km;f("slPrice").value=c.price;f("slFuel").value=c.fuel;
+    f("slTrans").value=c.trans;f("slBody").value=c.body;f("slHp").value=c.hp||"";
+    f("slDrive").value=c.drive||"Para";f("slCity").value=c.city;f("slDesc").value=c.desc||"";
+    f("slName").value=c.dealer.n;f("slPhone").value=c.phone||(c.dealer&&c.dealer.phone)||"";
+    document.querySelectorAll("#slColors .swatch").forEach(x=>x.classList.toggle("on",x.dataset.color===c.color[0]));
+    document.querySelectorAll("#slFeats .feat-pick").forEach(b=>b.classList.toggle("on",(c.feats||[]).includes(b.dataset.feat)));
+    sellState.scene=c.scene;sellState.plate=c.plate;sellState.photos=(c.photos||[]).slice();
+    f("sellTitle").textContent="Ndrysho shpalljen";f("slPublish").textContent="Ruaj ndryshimet";
+  } else {
+    sellState.scene=pick(SCENES);sellState.plate=plate();
+    f("sellTitle").textContent="Publiko shpalljen tënde";f("slPublish").textContent="Publiko shpalljen →";
+    if(prefill){if(prefill.make){ensureMakeModel(prefill.make);rebuildMakeSelects();f("slMake").value=prefill.make}if(prefill.year)f("slYear").value=prefill.year;if(prefill.km)f("slKm").value=prefill.km}
+  }
+  renderPhotoThumbs();
+  updatePreview();
+  openOverlay("sellOverlay");
+}
+function publishListing(e){
+  e.preventDefault();
+  const d=readSellForm();
+  d.photos=sellState.photos.slice();
+  const errs=validate(d);
+  if(errs.length){
+    document.querySelectorAll("#sellForm .fld").forEach(x=>x.classList.remove("bad"));
+    errs.forEach(id=>setFieldError(id,true));
+    toast("Plotëso fushat e detyrueshme ("+errs.length+")");
+    const first=document.getElementById(errs[0]);if(first)first.closest(".fld").scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  ensureMakeModel(d.make,d.model);rebuildMakeSelects();
+  const editing=sellState.editId;
+  const id=editing||Date.now();
+  const car=composeCar(d,id,sellState.scene,sellState.plate);
+  if(editing){
+    const i=CARS.findIndex(c=>c.id===id);if(i>=0)CARS[i]=car;
+    const j=myListings.findIndex(c=>c.id===id);if(j>=0)myListings[j]=car;else myListings.unshift(car);
+  } else {CARS.unshift(car);myListings.unshift(car)}
+  const saved=saveListings(myListings);
+  refreshStats();updateFilterCounts();ensureMineChip();
+  closeOverlay("sellOverlay");
+  render();
+  document.getElementById("listings").scrollIntoView({behavior:"smooth"});
+  toast(!saved?"U publikua, por fotot s'u ruajtën dot (hapësira u mbush)":editing?"Shpallja u përditësua ✓":"Shpallja u publikua! 🎉");
+  sellState.editId=null;
+  setTimeout(()=>openDetail(id),editing?0:380);
+}
+function deleteListing(id){
+  if(!confirm("Të fshihet kjo shpallje përgjithmonë?"))return;
+  const i=CARS.findIndex(c=>c.id===id);if(i>=0)CARS.splice(i,1);
+  myListings=myListings.filter(c=>c.id!==id);saveListings(myListings);
+  favs.delete(id);saveFavs();cmp.delete(id);
+  if(!myListings.length){const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.remove();state.mineOnly=false}
+  refreshStats();updateFilterCounts();updateFavCount();renderTray();
+  closeOverlay("detailOverlay");render();
+  toast("Shpallja u fshi");
+}
+function setupSell(){
+  document.getElementById("sellForm").addEventListener("submit",publishListing);
+  const hb=document.getElementById("btnSellHdr");if(hb)hb.addEventListener("click",e=>{e.preventDefault();openSell()});
+  const pb=document.getElementById("btnPublishListing");if(pb)pb.addEventListener("click",()=>openSell({make:document.getElementById("vMake").value,year:document.getElementById("vYear").value,km:document.getElementById("vKm").value}));
+}
+
+/* ================= INFO PAGES ================= */
+const INFO={
+  about:{eyebrow:"Rreth nesh",title:"Tregu nr.1 i makinave në Shqipëri",body:`
+    <p>VETURA.AL lindi me një qëllim të thjeshtë: ta bëjë blerjen dhe shitjen e makinave në Shqipëri transparente, të shpejtë dhe pa stres.</p>
+    <p>Sot bashkojmë mijëra blerës me koncesionarë dhe shitës privatë të verifikuar, duke ofruar vlerësim real të çmimit, historik kilometrazhi dhe financim të menjëhershëm — të gjitha në një vend.</p>
+    <ul><li><b>48,000+</b> shitje reale të analizuara për vlerësimin e çmimit</li><li><b>64</b> koncesionarë të verifikuar në 7 qytete</li><li><b>4.8/5</b> vlerësim mesatar nga mbi 12,400 përdorues</li></ul>
+    <p>Misioni ynë: çdo shqiptar të blejë makinën e duhur, me çmimin e duhur.</p>`},
+  contact:{eyebrow:"Kontakti",title:"Jemi këtu për të ndihmuar",body:`
+    <p>Ke një pyetje, sugjerim ose problem me një shpallje? Ekipi ynë përgjigjet brenda 24 orëve.</p>
+    <div class="info-contact"><div><span>Email</span>info@vetura.al</div><div><span>Telefon</span>+355 4 22 000 00</div><div><span>Adresa</span>Rr. e Kavajës, Tiranë, Shqipëri</div><div><span>Orari</span>E hënë – E shtunë, 09:00 – 19:00</div></div>
+    <p style="margin-top:14px">Dëshiron të shesësh? <a href="#" onclick="closeOverlay('infoOverlay');openSell();return false" style="color:var(--red);font-weight:700">Publiko shpalljen tënde falas →</a></p>`},
+  terms:{eyebrow:"Kushtet e përdorimit",title:"Kushtet e përdorimit",body:`
+    <p>Duke përdorur VETURA.AL, ti pranon kushtet e mëposhtme:</p>
+    <ul><li>Të dhënat e shpalljes duhet të jenë të vërteta dhe të sakta.</li><li>Ndalohet publikimi i makinave që nuk i posedon ose nuk ke të drejtë t'i shesësh.</li><li>VETURA.AL vepron si platformë lidhëse dhe nuk është palë në transaksion.</li><li>Çmimet dhe vlerësimet janë orientuese dhe nuk përbëjnë ofertë detyruese.</li><li>Rezervojmë të drejtën të heqim shpallje që shkelin këto kushte.</li></ul>
+    <p>Ky është një demonstrim — asnjë e dhënë nuk ndahet me palë të treta.</p>`},
+  privacy:{eyebrow:"Privatësia",title:"Mbrojtja e të dhënave",body:`
+    <p>Ne e marrim seriozisht privatësinë tënde.</p>
+    <ul><li>Të preferuarat dhe shpalljet e tua ruhen vetëm në këtë pajisje (localStorage), jo në server.</li><li>Të dhënat e kontaktit përdoren vetëm për të lidhur blerësin me shitësin.</li><li>Nuk shesim e nuk ndajmë të dhënat e tua personale me reklamues.</li><li>Mund t'i fshish shpalljet e tua në çdo moment.</li></ul>
+    <p>Ky është një demonstrim — të dhënat qëndrojnë lokalisht në shfletuesin tënd.</p>`},
+  dealers:{eyebrow:"Për koncesionarët",title:"Shit më shumë me VETURA.AL",body:`
+    <p>Bashkohu me 64 koncesionarët që arrijnë mijëra blerës të verifikuar çdo muaj.</p>
+    <ul><li>Publikim i pakufizuar shpalljesh me vlerësim automatik çmimi</li><li>Profil i verifikuar me yje dhe vlerësime nga klientët</li><li>Statistika në kohë reale për shikimet dhe kontaktet</li></ul>
+    <button class="btn-primary" style="margin-top:4px" onclick="closeOverlay('infoOverlay');openSell()">Publiko shpalljen e parë →</button>`}
+};
+function openInfo(key){
+  const data=INFO[key];if(!data)return;
+  document.getElementById("infoBody").innerHTML=`<div class="info-eyebrow">${data.eyebrow}</div><h2>${data.title}</h2>${data.body}`;
+  openOverlay("infoOverlay");
+}
+function setupInfoLinks(){
+  document.querySelectorAll("[data-info]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();openInfo(a.dataset.info)}));
+  document.querySelectorAll("[data-foot]").forEach(a=>a.addEventListener("click",e=>{
+    e.preventDefault();const k=a.dataset.foot;
+    if(k==="sell"){openSell();return}
+    if(k==="dealers"){openInfo("dealers");return}
+    if(k==="electric"){state.fuels.clear();state.fuels.add("Elektrik");state.bodies.clear();state.mineOnly=false;state.favOnly=false;state.shown=12;syncChecks();render();document.getElementById("listings").scrollIntoView({behavior:"smooth"});toast("Duke shfaqur makinat elektrike")}
+    if(k==="new"){state.yearMin=2026;state.shown=12;syncSearchUI();render();document.getElementById("listings").scrollIntoView({behavior:"smooth"});toast("Duke shfaqur makinat e reja")}
+  }));
+  document.querySelectorAll("a.logo").forEach(l=>l.addEventListener("click",e=>{e.preventDefault();window.scrollTo({top:0,behavior:"smooth"})}));
+}
+
 /* ================= INIT ================= */
-document.getElementById("statTotal").textContent=CARS.length.toLocaleString("de-DE");
-document.getElementById("statDeals").textContent=CARS.filter(c=>c.deal==="great").length;
+loadFavIds().forEach(id=>favs.add(id));
+integrateListings();
 buildSearch();
 buildFilters();
+setupSell();
+setupInfoLinks();
+ensureMineChip();
+refreshStats();
+updateFavCount();
 finUpdate();
 render();
 </script>
