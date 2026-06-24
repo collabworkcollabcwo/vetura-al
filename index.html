@@ -425,6 +425,20 @@ a{color:inherit;text-decoration:none}
 .m-thumbs button img{width:100%;height:100%;object-fit:cover;border-radius:6px}
 .thumb-photo{width:100%;height:100%;object-fit:cover;border-radius:6px;display:block}
 .cmp-thumb .thumb-photo{width:52px;height:32px}
+/* latest listings strip */
+.latest-sec{margin-top:44px}
+.latest-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.latest-head .sec-title{font-size:clamp(22px,3vw,30px)}
+.latest-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(272px,1fr);gap:18px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.latest-row>.card{scroll-snap-align:start}
+@media(max-width:560px){.latest-row{grid-auto-columns:minmax(240px,86%)}.latest-head .btn-ghost{display:none}}
+/* my-listings header button */
+.btn-mine-hdr{display:flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--line);border-radius:999px;font-weight:600;font-size:13.5px;background:#fff;transition:border-color .15s}
+.btn-mine-hdr:hover{border-color:var(--ink)}
+.btn-mine-hdr.on{border-color:var(--plate);background:#E7F0FB;color:var(--plate)}
+/* share button in detail */
+.btn-share{width:100%;height:42px;margin-top:8px;border:1.5px solid var(--line);border-radius:var(--radius-s);font-weight:700;font-size:13.5px;color:var(--ink2);background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
+.btn-share:hover{border-color:var(--plate);color:var(--plate)}
 </style>
 </head>
 <body>
@@ -443,6 +457,11 @@ a{color:inherit;text-decoration:none}
       <a href="#" id="navCmp">Krahaso</a>
     </nav>
     <div class="hdr-right">
+      <button class="btn-mine-hdr" id="btnMineHdr" aria-label="Shpalljet e mia">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3H4a1 1 0 0 0-1 1v5.59A2 2 0 0 0 3.59 11l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83Z"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+        <span class="lbl">Të miat</span>
+        <span class="fav-count zero" id="mineCount">0</span>
+      </button>
       <button class="btn-fav-hdr" id="btnFavHdr" aria-label="Të preferuarat">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
         <span class="lbl">Të preferuarat</span>
@@ -521,6 +540,18 @@ a{color:inherit;text-decoration:none}
   <div class="stat"><span class="ic">🏷️</span><div><b id="statDeals">0</b><span>me çmim shumë të mirë</span></div></div>
   <div class="stat"><span class="ic">🏢</span><div><b>64</b><span>koncesionarë të verifikuar</span></div></div>
   <div class="stat"><span class="ic">⭐</span><div><b>4.8/5</b><span>nga 12,400+ vlerësime</span></div></div>
+</section>
+
+<!-- ======= LATEST LISTINGS ======= -->
+<section class="section latest-sec" id="latestSec" aria-label="Shpalljet e fundit" style="display:none">
+  <div class="latest-head">
+    <div>
+      <div class="sec-eyebrow">Të reja në treg</div>
+      <h2 class="sec-title">Shpalljet e fundit</h2>
+    </div>
+    <button class="btn-ghost" id="latestAll">Shiko të gjitha →</button>
+  </div>
+  <div class="latest-row" id="latestRow"></div>
 </section>
 
 <!-- ======= MAIN: FILTERS + LISTINGS ======= -->
@@ -1058,7 +1089,7 @@ function renderActiveFilters(){
   state.cities.forEach(ct=>add(ct,()=>{state.cities.delete(ct);syncChecks()}));
   state.deals.forEach(d=>add(DEAL_LBL[d],()=>{state.deals.delete(d);syncChecks()}));
   if(state.favOnly)add("Vetëm të preferuarat",()=>{state.favOnly=false});
-  if(state.mineOnly)add("Shpalljet e mia",()=>{state.mineOnly=false;const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.classList.remove("on")});
+  if(state.mineOnly)add("Shpalljet e mia",()=>{state.mineOnly=false;const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.classList.remove("on");document.getElementById("btnMineHdr").classList.remove("on")});
   const el=document.getElementById("activeFilters");
   el.innerHTML=tags.map((t,i)=>`<span class="af-tag">${t.lbl}<button data-af="${i}" aria-label="Hiq filtrin">✕</button></span>`).join("");
   el.querySelectorAll("[data-af]").forEach(btn=>btn.addEventListener("click",()=>{tags[+btn.dataset.af].fn();render()}));
@@ -1116,6 +1147,7 @@ function resetAll(){
   ["fPriceMin","fPriceMax","fYearMin","fYearMax"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("fKm").value="";
   document.querySelectorAll("#quickChips .chip").forEach(c=>c.classList.remove("on"));
+  document.getElementById("btnMineHdr").classList.remove("on");
   syncChecks();syncSearchUI();render();
   toast("Filtrat u pastruan");
 }
@@ -1162,14 +1194,17 @@ document.getElementById("quickChips").addEventListener("click",e=>{
 });
 
 /* ================= GRID EVENTS (delegation) ================= */
-document.getElementById("grid").addEventListener("click",e=>{
+function onCarGridClick(e){
   const fav=e.target.closest("[data-fav]");
   if(fav){toggleFav(+fav.dataset.fav);return}
   const cm=e.target.closest("[data-cmp]");
   if(cm){toggleCmp(+cm.dataset.cmp);return}
   const dt=e.target.closest("[data-detail]");
   if(dt){openDetail(+dt.dataset.detail);return}
-});
+}
+document.getElementById("grid").addEventListener("click",onCarGridClick);
+document.getElementById("latestRow").addEventListener("click",onCarGridClick);
+document.getElementById("latestAll").addEventListener("click",()=>{document.getElementById("listings").scrollIntoView({behavior:"smooth"})});
 document.getElementById("btnMore").addEventListener("click",()=>{state.shown+=12;render()});
 document.getElementById("sortSel").addEventListener("change",e=>{state.sort=e.target.value;render()});
 document.getElementById("btnReset").addEventListener("click",resetAll);
@@ -1177,6 +1212,43 @@ document.getElementById("btnFavHdr").addEventListener("click",()=>{
   state.favOnly=!state.favOnly;state.shown=12;render();
   document.getElementById("listings").scrollIntoView({behavior:"smooth"});
 });
+document.getElementById("btnMineHdr").addEventListener("click",()=>{
+  const count=CLOUD?CARS.filter(c=>c.mine).length:myListings.length;
+  if(!count){openSell();return;}
+  applyMineOnly(!state.mineOnly);
+  if(state.mineOnly)document.getElementById("listings").scrollIntoView({behavior:"smooth"});
+});
+function applyMineOnly(on){
+  state.mineOnly=on;state.favOnly=false;state.shown=12;
+  const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.classList.toggle("on",on);
+  document.getElementById("btnMineHdr").classList.toggle("on",on);
+  render();
+}
+function updateMineCount(){
+  const count=CLOUD?CARS.filter(c=>c.mine).length:myListings.length;
+  const el=document.getElementById("mineCount");
+  el.textContent=count;el.classList.toggle("zero",!count);
+}
+function renderLatest(){
+  const sec=document.getElementById("latestSec"),row=document.getElementById("latestRow");
+  const list=(CLOUD?cloudCars:myListings).slice(0,10);
+  if(!list.length){sec.style.display="none";return;}
+  sec.style.display="";
+  row.innerHTML=list.map(cardHTML).join("");
+}
+function shareListing(c){
+  const url=location.origin+location.pathname+"?car="+c.id;
+  if(navigator.share){navigator.share({title:c.year+" "+c.make+" "+c.model+" — VETURA.AL",url}).catch(()=>{});return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(()=>toast("Linku u kopjua ✓")).catch(()=>prompt("Kopjo linkun e shpalljes:",url));return;}
+  prompt("Kopjo linkun e shpalljes:",url);
+}
+let sharedHandled=false;
+function openSharedFromURL(){
+  if(sharedHandled)return;
+  const m=location.search.match(/[?&]car=(\d+)/);if(!m)return;
+  const car=CARS.find(c=>c.id===+m[1]);
+  if(car){sharedHandled=true;openDetail(+m[1]);}
+}
 
 /* ================= FAVORITES ================= */
 function toggleFav(id){
@@ -1347,6 +1419,10 @@ function openDetail(id){
           <button class="btn-cmp ${cmp.has(c.id)?"on":""}" style="flex:1;justify-content:center" data-cmp-m="${c.id}">${cmp.has(c.id)?"✓ Në krahasim":"⇄ Krahaso"}</button>
           <button class="btn-cmp ${favs.has(c.id)?"on":""}" style="flex:1;justify-content:center" data-fav-m="${c.id}">${favs.has(c.id)?"♥ E ruajtur":"♡ Ruaje"}</button>
         </div>
+        <button class="btn-share" data-share="${c.id}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+          Kopjo linkun e shpalljes
+        </button>
       </aside>
     </div>
     ${sim.length?`<div class="similar"><h4>Makina të ngjashme</h4><div class="sim-row">
@@ -1387,6 +1463,7 @@ function openDetail(id){
   modal.querySelector("#mfTerm").addEventListener("input",upd);
   modal.querySelectorAll("[data-cmp-m]").forEach(b=>b.addEventListener("click",()=>{toggleCmp(c.id);openDetail(c.id)}));
   modal.querySelectorAll("[data-fav-m]").forEach(b=>b.addEventListener("click",()=>{toggleFav(c.id);openDetail(c.id)}));
+  modal.querySelectorAll("[data-share]").forEach(b=>b.addEventListener("click",()=>shareListing(c)));
   modal.querySelectorAll("[data-sim]").forEach(b=>b.addEventListener("click",()=>{openDetail(+b.dataset.sim);document.getElementById("detailOverlay").scrollTop=0}));
   modal.querySelector(".modal-close").addEventListener("click",()=>closeOverlay("detailOverlay"));
   openOverlay("detailOverlay");
@@ -1536,7 +1613,8 @@ async function loadCloudListings(){
     cloudCars.forEach(c=>{const i=CARS.indexOf(c);if(i>=0)CARS.splice(i,1);});
     cloudCars=(rows||[]).map(rowToCar);
     cloudCars.forEach(c=>{ensureMakeModel(c.make,c.model);CARS.unshift(c);});
-    rebuildMakeSelects();refreshStats();updateFilterCounts();ensureMineChip();render();
+    rebuildMakeSelects();refreshStats();updateFilterCounts();ensureMineChip();updateMineCount();renderLatest();render();
+    openSharedFromURL();
   }catch(e){console.error("cloud load",e);toast("Nuk u ngarkuan dot shpalljet online");}
 }
 async function cloudPublish(d){
@@ -1562,7 +1640,7 @@ async function cloudPublish(d){
     car.mine=true;car._cover=cover;car._hasPhotos=photos.length>0;car._photosLoaded=true;car.photos=photos;
     if(editingCar){const i=CARS.findIndex(c=>c.id===logicalId);if(i>=0)CARS[i]=car;const ci=cloudCars.findIndex(c=>c._row===car._row);if(ci>=0)cloudCars[ci]=car;}
     else{CARS.unshift(car);cloudCars.unshift(car);}
-    refreshStats();updateFilterCounts();ensureMineChip();
+    refreshStats();updateFilterCounts();ensureMineChip();updateMineCount();renderLatest();
     closeOverlay("sellOverlay");render();
     document.getElementById("listings").scrollIntoView({behavior:"smooth"});
     toast(editingCar?"Shpallja u përditësua ✓":"Shpallja u publikua! 🎉");
@@ -1809,7 +1887,7 @@ function publishListing(e){
     const j=myListings.findIndex(c=>c.id===id);if(j>=0)myListings[j]=car;else myListings.unshift(car);
   } else {CARS.unshift(car);myListings.unshift(car)}
   const saved=saveListings(myListings);
-  refreshStats();updateFilterCounts();ensureMineChip();
+  refreshStats();updateFilterCounts();ensureMineChip();updateMineCount();renderLatest();
   closeOverlay("sellOverlay");
   render();
   document.getElementById("listings").scrollIntoView({behavior:"smooth"});
@@ -1828,7 +1906,7 @@ async function deleteListing(id){
   }
   const i=CARS.findIndex(c=>c.id===id);if(i>=0)CARS.splice(i,1);
   favs.delete(id);saveFavs();cmp.delete(id);
-  ensureMineChip();
+  ensureMineChip();updateMineCount();renderLatest();
   refreshStats();updateFilterCounts();updateFavCount();renderTray();
   closeOverlay("detailOverlay");render();
   toast("Shpallja u fshi");
@@ -1890,8 +1968,11 @@ setupInfoLinks();
 ensureMineChip();
 refreshStats();
 updateFavCount();
+updateMineCount();
+renderLatest();
 finUpdate();
 render();
+openSharedFromURL();
 if(CLOUD)loadCloudListings();
 </script>
 </body>
