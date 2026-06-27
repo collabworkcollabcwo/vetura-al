@@ -439,6 +439,13 @@ a{color:inherit;text-decoration:none}
 /* share button in detail */
 .btn-share{width:100%;height:42px;margin-top:8px;border:1.5px solid var(--line);border-radius:var(--radius-s);font-weight:700;font-size:13.5px;color:var(--ink2);background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
 .btn-share:hover{border-color:var(--plate);color:var(--plate)}
+/* VIN tag (replaces license plate on the photo) */
+.m-vin{position:absolute;bottom:14px;right:14px;display:flex;align-items:center;gap:8px;height:32px;padding:0 13px;border-radius:8px;background:rgba(21,23,28,.82);backdrop-filter:blur(4px);box-shadow:0 2px 10px rgba(0,0,0,.22)}
+.m-vin .vlbl{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.16em;color:#9AA0AA}
+.m-vin .vnum{font-family:var(--font-m);font-size:12.5px;font-weight:700;letter-spacing:1px;color:#fff}
+.vin-row{margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.vin-row span{font-family:var(--font-m);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);flex:none}
+.vin-row b{font-family:var(--font-m);font-size:13.5px;font-weight:700;letter-spacing:1px;word-break:break-all;text-align:right}
 </style>
 </head>
 <body>
@@ -799,6 +806,7 @@ a{color:inherit;text-decoration:none}
             <div class="fld"><label for="slDrive">Traksioni</label><select id="slDrive"><option value="Para">Para</option><option value="Prapa">Prapa</option><option value="4x4">4x4</option></select></div>
             <div class="fld"><label for="slCity">Qyteti <span class="req">*</span></label><select id="slCity"></select><span class="msg">Zgjidh</span></div>
           </div>
+          <div class="fld full" style="margin-bottom:12px"><label for="slVin">VIN / Numri i shasisë</label><input id="slVin" maxlength="17" autocomplete="off" placeholder="17 shenja, p.sh. WBADT43452G123456" style="text-transform:uppercase;font-family:var(--font-m);letter-spacing:1px"><span class="msg">VIN duhet të ketë 17 shenja</span></div>
           <div class="fld full" style="margin-bottom:12px"><label>Ngjyra</label><div class="swatches" id="slColors"></div></div>
           <div class="fld full"><label for="slDesc">Përshkrimi</label><textarea id="slDesc" rows="3" placeholder="Gjendja, historiku i shërbimeve, pajisje shtesë, arsyeja e shitjes..."></textarea></div>
           <div class="sl-sec">Fotot</div>
@@ -1049,7 +1057,7 @@ function cardHTML(c){
         <h3>${c.year} ${c.make}<small>${c.model}</small></h3>
         <div class="price">${fmt(c.price)}<small>≈ ${fmt(monthly(c.price))}/muaj</small></div>
       </div>
-      <div class="plate-strip" title="Targa: ${c.plate}">
+      <div class="plate-strip" title="${c.vin?'VIN: '+c.vin:''}">
         <span class="band"><span>★</span><b>AL</b></span>
         <span class="seg">${c.isNew?"0 km":fmtKm(c.km)}</span>
         <span class="seg">${c.fuel}</span>
@@ -1386,7 +1394,7 @@ function openDetail(id){
       <div class="m-thumbs" role="tablist" aria-label="Fotot">
         ${scenes.map((s,i)=>`<button class="${i===0?"on":""}" data-scene="${i}" title="${s.t}" role="tab" aria-selected="${i===0}">${s.photo?`<img src="${s.photo}" alt="">`:s.ic}</button>`).join("")}
       </div>
-      <div class="m-plate" aria-label="Targa"><span class="band"><span>★</span><b>AL</b></span><span class="num">${c.plate}</span></div>
+      ${c.vin?`<div class="m-vin" aria-label="VIN"><span class="vlbl">VIN</span><span class="vnum">${c.vin}</span></div>`:""}
     </div>
     <div class="m-body">
       <div>
@@ -1412,6 +1420,7 @@ function openDetail(id){
              ["Konsumi",c.cons],["Traksioni",c.drive],["Dyer / Ulëse",c.doors+" / "+c.seats]]
             .map(([k,v])=>`<div class="spec"><span>${k}</span><b>${v}</b></div>`).join("")}
         </div>
+        ${c.vin?`<div class="vin-row"><span>VIN / Nr. shasisë</span><b>${c.vin}</b></div>`:""}
         ${descBlock}
         ${featsBlock}
         ${reviewsBlock}
@@ -1724,7 +1733,7 @@ function composeCar(d,id,scene,plate){
     body:d.body||"sedan",hp,engine,cons,drive:d.drive||"Para",doors:5,seats:5,
     color,city:d.city||"Tiranë",
     dealer:{n:d.name||"Shitës privat",c:d.city||"Tiranë",r:"5.0",v:0,t:initials(d.name||"Shitës Privat"),mine:true,phone:d.phone||""},
-    plate:plate||"AA 000 AA",isNew,drop:0,scene:scene||SCENES[0],
+    plate:plate||"AA 000 AA",vin:d.vin||"",isNew,drop:0,scene:scene||SCENES[0],
     feats:d.feats||[],reviews:[],rating:"—",desc:d.desc||"",mine:true,phone:d.phone||"",
     photos:d.photos||[]
   };
@@ -1809,6 +1818,7 @@ function readSellForm(){
     price:v("slPrice")!==""?Math.max(0,Math.round(+v("slPrice"))):null,
     fuel:v("slFuel"),trans:v("slTrans"),body:v("slBody"),
     hp:v("slHp")!==""?+v("slHp"):null,drive:v("slDrive"),city:v("slCity"),color,
+    vin:v("slVin").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,17),
     desc:clean(v("slDesc")),
     feats:[...document.querySelectorAll("#slFeats .feat-pick.on")].map(b=>b.dataset.feat),
     name:clean(v("slName")),phone:clean(v("slPhone"))
@@ -1841,7 +1851,7 @@ function updatePreview(){
 function openSell(prefill,editId){
   buildSellOnce();
   const f=id=>document.getElementById(id);
-  ["slMake","slModel","slKm","slPrice","slHp","slDesc","slName","slPhone"].forEach(id=>f(id).value="");
+  ["slMake","slModel","slKm","slPrice","slHp","slVin","slDesc","slName","slPhone"].forEach(id=>f(id).value="");
   ["slYear","slFuel","slTrans","slBody","slCity"].forEach(id=>f(id).selectedIndex=0);
   f("slDrive").selectedIndex=0;
   document.querySelectorAll("#slColors .swatch").forEach((x,i)=>x.classList.toggle("on",i===0));
@@ -1855,6 +1865,7 @@ function openSell(prefill,editId){
     f("slKm").value=c.km;f("slPrice").value=c.price;f("slFuel").value=c.fuel;
     f("slTrans").value=c.trans;f("slBody").value=c.body;f("slHp").value=c.hp||"";
     f("slDrive").value=c.drive||"Para";f("slCity").value=c.city;f("slDesc").value=c.desc||"";
+    f("slVin").value=c.vin||"";
     f("slName").value=c.dealer.n;f("slPhone").value=c.phone||(c.dealer&&c.dealer.phone)||"";
     document.querySelectorAll("#slColors .swatch").forEach(x=>x.classList.toggle("on",x.dataset.color===c.color[0]));
     document.querySelectorAll("#slFeats .feat-pick").forEach(b=>b.classList.toggle("on",(c.feats||[]).includes(b.dataset.feat)));
