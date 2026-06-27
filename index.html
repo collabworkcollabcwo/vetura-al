@@ -246,7 +246,8 @@ a{color:inherit;text-decoration:none}
 .m-plate{position:absolute;bottom:14px;right:14px;display:flex;border:2px solid var(--ink);border-radius:7px;overflow:hidden;height:34px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .m-plate .band{background:var(--plate);width:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--plate-text);font-size:6.5px;gap:1px}
 .m-plate .band b{color:#fff;font-family:var(--font-m);font-size:8.5px}
-.m-plate .num{display:flex;align-items:center;padding:0 12px;font-family:var(--font-m);font-weight:700;font-size:15px;letter-spacing:2px}
+.m-plate .num{display:flex;align-items:center;padding:0 11px;font-family:var(--font-m);font-weight:700;font-size:12.5px;letter-spacing:.5px}
+@media(max-width:560px){.m-plate .num{font-size:11px;padding:0 8px}}
 .m-body{padding:26px;display:grid;grid-template-columns:1.55fr 1fr;gap:26px}
 @media(max-width:820px){.m-body{grid-template-columns:1fr}}
 .m-title h2{font-family:var(--font-d);font-size:27px;font-weight:900;letter-spacing:-.015em;line-height:1.1}
@@ -439,10 +440,7 @@ a{color:inherit;text-decoration:none}
 /* share button in detail */
 .btn-share{width:100%;height:42px;margin-top:8px;border:1.5px solid var(--line);border-radius:var(--radius-s);font-weight:700;font-size:13.5px;color:var(--ink2);background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
 .btn-share:hover{border-color:var(--plate);color:var(--plate)}
-/* VIN tag (replaces license plate on the photo) */
-.m-vin{position:absolute;bottom:14px;right:14px;display:flex;align-items:center;gap:8px;height:32px;padding:0 13px;border-radius:8px;background:rgba(21,23,28,.82);backdrop-filter:blur(4px);box-shadow:0 2px 10px rgba(0,0,0,.22)}
-.m-vin .vlbl{font-family:var(--font-m);font-size:9px;font-weight:700;letter-spacing:.16em;color:#9AA0AA}
-.m-vin .vnum{font-family:var(--font-m);font-size:12.5px;font-weight:700;letter-spacing:1px;color:#fff}
+/* VIN shown plate-style on the photo */
 .vin-row{margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .vin-row span{font-family:var(--font-m);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);flex:none}
 .vin-row b{font-family:var(--font-m);font-size:13.5px;font-weight:700;letter-spacing:1px;word-break:break-all;text-align:right}
@@ -1394,7 +1392,7 @@ function openDetail(id){
       <div class="m-thumbs" role="tablist" aria-label="Fotot">
         ${scenes.map((s,i)=>`<button class="${i===0?"on":""}" data-scene="${i}" title="${s.t}" role="tab" aria-selected="${i===0}">${s.photo?`<img src="${s.photo}" alt="">`:s.ic}</button>`).join("")}
       </div>
-      ${c.vin?`<div class="m-vin" aria-label="VIN"><span class="vlbl">VIN</span><span class="vnum">${c.vin}</span></div>`:""}
+      ${c.vin?`<div class="m-plate" aria-label="VIN"><span class="band"><span>VIN</span><b>AL</b></span><span class="num">${c.vin}</span></div>`:""}
     </div>
     <div class="m-body">
       <div>
