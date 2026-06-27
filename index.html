@@ -244,8 +244,7 @@ a{color:inherit;text-decoration:none}
 .m-thumbs button{width:54px;height:36px;border-radius:8px;border:2px solid rgba(255,255,255,.7);background:rgba(255,255,255,.25);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s}
 .m-thumbs button.on{border-color:#fff;background:rgba(255,255,255,.55)}
 .m-plate{position:absolute;bottom:14px;right:14px;display:flex;border:2px solid var(--ink);border-radius:7px;overflow:hidden;height:34px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.18)}
-.m-plate .band{background:var(--plate);width:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--plate-text);font-size:6.5px;gap:1px}
-.m-plate .band b{color:#fff;font-family:var(--font-m);font-size:8.5px}
+.m-plate .band{background:#0F1115;display:flex;align-items:center;justify-content:center;padding:0 9px;color:#fff;font-family:var(--font-m);font-size:10px;font-weight:800;letter-spacing:1.5px}
 .m-plate .num{display:flex;align-items:center;padding:0 11px;font-family:var(--font-m);font-weight:700;font-size:12.5px;letter-spacing:.5px}
 @media(max-width:560px){.m-plate .num{font-size:11px;padding:0 8px}}
 .m-body{padding:26px;display:grid;grid-template-columns:1.55fr 1fr;gap:26px}
@@ -1392,7 +1391,7 @@ function openDetail(id){
       <div class="m-thumbs" role="tablist" aria-label="Fotot">
         ${scenes.map((s,i)=>`<button class="${i===0?"on":""}" data-scene="${i}" title="${s.t}" role="tab" aria-selected="${i===0}">${s.photo?`<img src="${s.photo}" alt="">`:s.ic}</button>`).join("")}
       </div>
-      ${c.vin?`<div class="m-plate" aria-label="VIN"><span class="band"><span>VIN</span><b>AL</b></span><span class="num">${c.vin}</span></div>`:""}
+      ${c.vin?`<div class="m-plate" aria-label="VIN"><span class="band">VIN</span><span class="num">${c.vin}</span></div>`:""}
     </div>
     <div class="m-body">
       <div>
