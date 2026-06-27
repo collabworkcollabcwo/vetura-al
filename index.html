@@ -803,7 +803,7 @@ a{color:inherit;text-decoration:none}
             <div class="fld"><label for="slDrive">Traksioni</label><select id="slDrive"><option value="Para">Para</option><option value="Prapa">Prapa</option><option value="4x4">4x4</option></select></div>
             <div class="fld"><label for="slCity">Qyteti <span class="req">*</span></label><select id="slCity"></select><span class="msg">Zgjidh</span></div>
           </div>
-          <div class="fld full" style="margin-bottom:12px"><label for="slVin">VIN / Numri i shasisë</label><input id="slVin" maxlength="17" autocomplete="off" placeholder="17 shenja, p.sh. WBADT43452G123456" style="text-transform:uppercase;font-family:var(--font-m);letter-spacing:1px"><span class="msg">VIN duhet të ketë 17 shenja</span></div>
+          <div class="fld full" style="margin-bottom:12px"><label for="slVin">VIN / Numri i shasisë <span class="req">*</span></label><input id="slVin" maxlength="17" autocomplete="off" placeholder="17 shenja, p.sh. WBADT43452G123456" style="text-transform:uppercase;font-family:var(--font-m);letter-spacing:1px"><span class="msg">VIN-i është i detyrueshëm — 17 shenja</span></div>
           <div class="fld full" style="margin-bottom:12px"><label>Ngjyra</label><div class="swatches" id="slColors"></div></div>
           <div class="fld full"><label for="slDesc">Përshkrimi</label><textarea id="slDesc" rows="3" placeholder="Gjendja, historiku i shërbimeve, pajisje shtesë, arsyeja e shitjes..."></textarea></div>
           <div class="sl-sec">Fotot</div>
@@ -1823,9 +1823,10 @@ function readSellForm(){
 }
 function validate(d){
   const errs=[];
-  const req={slMake:d.make,slModel:d.model,slYear:d.year,slKm:d.km,slPrice:d.price,slFuel:d.fuel,slTrans:d.trans,slBody:d.body,slCity:d.city,slName:d.name,slPhone:d.phone};
+  const req={slMake:d.make,slModel:d.model,slYear:d.year,slKm:d.km,slPrice:d.price,slFuel:d.fuel,slTrans:d.trans,slBody:d.body,slCity:d.city,slVin:d.vin,slName:d.name,slPhone:d.phone};
   Object.entries(req).forEach(([id,val])=>{if(val===""||val==null)errs.push(id)});
   if(d.price!=null&&d.price<=0&&!errs.includes("slPrice"))errs.push("slPrice");
+  if(d.vin&&d.vin.length!==17&&!errs.includes("slVin"))errs.push("slVin");
   if(d.phone&&d.phone.replace(/\D/g,"").length<6&&!errs.includes("slPhone"))errs.push("slPhone");
   return errs;
 }
