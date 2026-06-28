@@ -496,6 +496,23 @@ a{color:inherit;text-decoration:none}
 .prof-field input:focus{border-color:var(--plate);outline:none}
 .prof-field .pf-save{padding:0 18px;height:44px;background:var(--ink);color:#fff;border-radius:var(--radius-s);font-weight:700;font-size:13.5px}
 .prof-sec-t{font-family:var(--font-d);font-size:17px;font-weight:800;margin:22px 0 14px}
+.prof-av-wrap{position:relative;flex:none}
+.prof-av-edit{position:absolute;bottom:-2px;right:-2px;width:27px;height:27px;border-radius:50%;background:var(--ink);color:#fff;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:background .15s}
+.prof-av-edit:hover{background:#000}
+.prof-grid2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:560px;margin-bottom:6px}
+@media(max-width:600px){.prof-grid2{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.prof-grid2{grid-template-columns:1fr}}
+.prof-field textarea{width:100%;min-height:82px;border:1.5px solid var(--line);border-radius:var(--radius-s);padding:11px 13px;font-family:inherit;font-size:14px;line-height:1.5;resize:vertical}
+.prof-field textarea:focus{border-color:var(--plate);outline:none}
+.prof-save-all{height:46px;padding:0 26px;background:var(--ink);color:#fff;border-radius:var(--radius-s);font-weight:700;font-size:14px;margin-top:8px}
+.prof-save-all:hover{background:#000}
+.stars-display{color:var(--amber);letter-spacing:1px}
+.p-bio{color:var(--ink2);font-size:14px;line-height:1.6;margin:4px 0 2px;white-space:pre-wrap;max-width:560px}
+.rate-widget{display:flex;gap:5px;margin-top:4px}
+.rate-widget .star{font-size:28px;color:var(--line);cursor:pointer;transition:color .1s;line-height:1}
+.rate-widget .star.on,.rate-widget .star.hover{color:var(--amber)}
+.seller-link{margin-top:10px;width:100%;height:40px;border:1.5px solid var(--line);border-radius:var(--radius-s);font-weight:700;font-size:13.5px;color:var(--ink2);background:#fff;transition:all .15s}
+.seller-link:hover{border-color:var(--ink);color:var(--ink)}
 </style>
 </head>
 <body>
@@ -1460,6 +1477,7 @@ function openDetail(id){
             <textarea rows="3">Përshëndetje, jam i interesuar për ${c.year} ${c.make} ${c.model} (${fmt(c.price)}). A është ende në shitje?</textarea>
             <button type="submit" class="btn-contact" style="margin:0">Dërgo mesazhin</button>
           </form>
+          ${c._uid?`<button class="seller-link" data-seller="${c._uid}">👤 Shiko profilin & vlerësimet e shitësit</button>`:""}
         </div>`;
   const descBlock=c.desc?`<div class="feat-wrap"><h4>Përshkrimi</h4><div class="m-desc">${c.desc}</div></div>`:"";
   const featsBlock=c.feats&&c.feats.length?`<div class="feat-wrap"><h4>Pajisjet kryesore</h4><div class="feats">${c.feats.map(f=>`<span class="feat">${f}</span>`).join("")}</div></div>`:"";
@@ -1552,6 +1570,8 @@ function openDetail(id){
   if(bEdit)bEdit.addEventListener("click",()=>{closeOverlay("detailOverlay");openSell(null,c.id)});
   const bDel=modal.querySelector("[data-del]");
   if(bDel)bDel.addEventListener("click",()=>deleteListing(c.id));
+  const bSeller=modal.querySelector("[data-seller]");
+  if(bSeller)bSeller.addEventListener("click",()=>{closeOverlay("detailOverlay");openProfile(bSeller.dataset.seller);});
   const upd=()=>{
     const d=+modal.querySelector("#mfDown").value, t=+modal.querySelector("#mfTerm").value;
     modal.querySelector("#mfDownOut").textContent=d+"%";
@@ -1851,47 +1871,105 @@ function setupAuth(){
     else{msg.className="auth-msg ok show";msg.textContent="✓ Të dërguam një link hyrjeje te "+email+". Hape email-in dhe kliko linkun.";}
   });
 }
-function profRatingHtml(){return (authProfile&&authProfile.rating)?("★ "+Number(authProfile.rating).toFixed(1)+" vlerësim"):`<span style="color:var(--ink3);font-weight:500">Shitës i ri — pa vlerësime ende</span>`;}
-function openProfile(){
-  if(!authUser)return;
-  const av=userAvatar();
-  const myCars=CARS.filter(c=>c.mine);
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function escAttr(s){return String(s==null?"":s).replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function avgStars(a){return a.length?a.reduce((s,r)=>s+(r.stars||0),0)/a.length:null;}
+async function fetchProfile(uid){if(!supa)return null;try{const {data}=await supa.from("profiles").select("*").eq("id",uid).maybeSingle();return data;}catch(e){return null;}}
+async function fetchRating(uid){if(!supa)return {avg:null,count:0};try{const {data}=await supa.from("ratings").select("stars").eq("seller_id",uid);return {avg:avgStars(data||[]),count:(data||[]).length};}catch(e){return {avg:null,count:0};}}
+async function myRatingFor(uid){if(!supa||!authUser)return null;try{const {data}=await supa.from("ratings").select("stars").eq("seller_id",uid).eq("rater_id",authUser.id).maybeSingle();return data?data.stars:null;}catch(e){return null;}}
+async function rateSeller(uid,stars){if(!supa||!authUser)return {error:{message:"Hyr për të vlerësuar"}};return await supa.from("ratings").upsert({seller_id:uid,rater_id:authUser.id,stars},{onConflict:"seller_id,rater_id"});}
+function starsDisplay(avg,count){const r=Math.round(avg||0);return avg?`<span class="stars-display">${"★".repeat(r)}${"☆".repeat(5-r)}</span> <b>${avg.toFixed(1)}</b> <span style="color:var(--ink3);font-weight:500">(${count} vlerësime)</span>`:`<span style="color:var(--ink3);font-weight:500">Pa vlerësime ende</span>`;}
+async function openProfile(userId){
+  if(!supa){toast("Login jo gati");return;}
+  const isSelf=!userId||(authUser&&userId===authUser.id);
+  const targetId=isSelf?(authUser&&authUser.id):userId;
+  if(!targetId){openAuth();return;}
+  openOverlay("profileOverlay");
+  document.getElementById("profileModal").innerHTML=`<div style="padding:46px;text-align:center;color:var(--ink3)">Duke ngarkuar profilin…</div>`;
+  const prof=(isSelf?(authProfile||await fetchProfile(targetId)):await fetchProfile(targetId))||{};
+  if(isSelf&&!authProfile)authProfile=prof;
+  const rating=await fetchRating(targetId);
+  const myStars=isSelf?null:await myRatingFor(targetId);
+  const cars=cloudCars.filter(c=>c._uid===targetId);
+  const name=prof.full_name||(isSelf?userName():"Shitës");
+  const avatar=prof.avatar_url||(isSelf?userAvatar():"");
   document.getElementById("profileModal").innerHTML=`
     <button class="modal-close" data-close="profileOverlay" aria-label="Mbyll">✕</button>
     <div class="prof-head">
-      ${av?`<img class="prof-av" src="${av}" alt="" referrerpolicy="no-referrer">`:`<span class="prof-av-fallback">${userInitials()}</span>`}
+      <div class="prof-av-wrap">
+        ${avatar?`<img class="prof-av" src="${escAttr(avatar)}" alt="" referrerpolicy="no-referrer">`:`<span class="prof-av-fallback">${esc(initials(name))}</span>`}
+        ${isSelf?`<label class="prof-av-edit" title="Ndrysho foton">📷<input type="file" id="profAvInput" accept="image/*" hidden></label>`:""}
+      </div>
       <div>
-        <h2>${userName()}</h2>
-        <div class="p-email">${authUser.email||""}</div>
-        <div class="p-rating">${profRatingHtml()}</div>
+        <h2>${esc(name)}</h2>
+        ${prof.city?`<div class="p-email">📍 ${esc(prof.city)}</div>`:(isSelf?`<div class="p-email">${esc(authUser.email||"")}</div>`:"")}
+        <div class="p-rating" style="color:var(--ink)">${starsDisplay(rating.avg,rating.count)}</div>
       </div>
     </div>
     <div class="prof-body">
-      <div class="prof-field">
-        <label for="profPhone">Numri i telefonit <span style="color:var(--ink3);font-weight:500">(shfaqet te shpalljet e tua që blerësit të të marrin)</span></label>
-        <div class="pf-row">
-          <input id="profPhone" type="tel" autocomplete="tel" placeholder="+355 ..." value="${(authProfile&&authProfile.phone)||""}">
-          <button class="pf-save" id="profPhoneSave">Ruaj</button>
+      ${isSelf?`
+        <div class="prof-grid2">
+          <div class="prof-field"><label for="profName">Emri</label><input id="profName" value="${escAttr(name)}"></div>
+          <div class="prof-field"><label for="profCity">Qyteti</label><input id="profCity" placeholder="p.sh. Tiranë" value="${escAttr(prof.city)}"></div>
+          <div class="prof-field"><label for="profPhone">Telefoni</label><input id="profPhone" type="tel" placeholder="+355 ..." value="${escAttr(prof.phone)}"></div>
         </div>
-      </div>
-      <div class="prof-sec-t">Shpalljet e mia (${myCars.length})</div>
-      <div class="grid" id="profGrid">${myCars.length?myCars.map(cardHTML).join(""):`<div class="empty" style="grid-column:1/-1"><p>Ende nuk ke publikuar asnjë shpallje.</p><button class="btn-ghost" onclick="closeOverlay('profileOverlay');openSell()">+ Publiko shpalljen</button></div>`}</div>
+        <div class="prof-field" style="max-width:560px"><label for="profBio">Rreth meje — kush je</label><textarea id="profBio" placeholder="Trego diçka për veten: shitës privat apo biznes, çfarë makinash shet, përvoja...">${esc(prof.bio)}</textarea></div>
+        <button class="prof-save-all" id="profSaveAll">Ruaj profilin</button>
+      `:`
+        <p class="p-bio"${prof.bio?"":` style="color:var(--ink3)"`}>${prof.bio?esc(prof.bio):"Ky shitës nuk ka shtuar përshkrim."}</p>
+        ${prof.phone?`<a class="btn-call" style="display:inline-flex;align-items:center;justify-content:center;width:auto;padding:0 22px;text-decoration:none;margin-top:8px" href="tel:${escAttr(prof.phone)}">📞 ${esc(prof.phone)}</a>`:""}
+        ${authUser?`<div class="prof-sec-t">Vlerëso këtë shitës</div>
+        <div class="rate-widget" id="rateWidget" data-seller="${escAttr(targetId)}">${[1,2,3,4,5].map(n=>`<span class="star ${myStars&&n<=myStars?"on":""}" data-star="${n}">★</span>`).join("")}</div>
+        <div id="rateMsg" style="font-size:12.5px;color:var(--ink3);margin-top:7px">${myStars?"E vlerësove me "+myStars+" yje — kliko për ta ndryshuar.":"Kliko yjet për të vlerësuar."}</div>`:`<p style="margin-top:14px;font-size:13px;color:var(--ink3)">Hyr për të vlerësuar këtë shitës.</p>`}
+      `}
+      <div class="prof-sec-t">Shpalljet ${isSelf?"e mia":"e shitësit"} (${cars.length})</div>
+      <div class="grid" id="profGrid">${cars.length?cars.map(cardHTML).join(""):`<div class="empty" style="grid-column:1/-1"><p>${isSelf?"Ende nuk ke publikuar asnjë shpallje.":"Ky shitës nuk ka shpallje aktive."}</p>${isSelf?`<button class="btn-ghost" onclick="closeOverlay('profileOverlay');openSell()">+ Publiko shpalljen</button>`:""}</div>`}</div>
     </div>`;
   const modal=document.getElementById("profileModal");
   modal.querySelector(".modal-close").addEventListener("click",()=>closeOverlay("profileOverlay"));
-  const ps=modal.querySelector("#profPhoneSave");if(ps)ps.addEventListener("click",savePhone);
   modal.querySelector("#profGrid").addEventListener("click",onCarGridClick);
-  openOverlay("profileOverlay");
+  const avI=modal.querySelector("#profAvInput");if(avI)avI.addEventListener("change",()=>{if(avI.files&&avI.files[0])uploadAvatar(avI.files[0]);});
+  const sv=modal.querySelector("#profSaveAll");if(sv)sv.addEventListener("click",saveProfile);
+  const rw=modal.querySelector("#rateWidget");
+  if(rw){
+    const stars=[...rw.querySelectorAll(".star")];
+    stars.forEach(s=>{
+      s.addEventListener("mouseenter",()=>{const n=+s.dataset.star;stars.forEach(x=>x.classList.toggle("hover",+x.dataset.star<=n));});
+      s.addEventListener("mouseleave",()=>stars.forEach(x=>x.classList.remove("hover")));
+      s.addEventListener("click",async()=>{
+        const n=+s.dataset.star,msg=modal.querySelector("#rateMsg");
+        const {error}=await rateSeller(targetId,n);
+        if(error){if(msg)msg.textContent="Gabim: "+error.message;}
+        else{stars.forEach(x=>x.classList.toggle("on",+x.dataset.star<=n));if(msg)msg.textContent="Faleminderit! E vlerësove me "+n+" yje.";toast("Vlerësimi u ruajt ✓");}
+      });
+    });
+  }
 }
-async function savePhone(){
-  if(!supa||!authUser)return;
-  const phone=document.getElementById("profPhone").value.trim();
+async function uploadAvatar(file){
+  if(!supa||!authUser||!file||!file.type.startsWith("image/"))return;
   try{
-    const {error}=await supa.from("profiles").update({phone}).eq("id",authUser.id);
+    const dataUrl=await compressImage(file,256,0.85);
+    const {error}=await supa.from("profiles").update({avatar_url:dataUrl}).eq("id",authUser.id);
     if(error)throw error;
-    authProfile=authProfile||{};authProfile.phone=phone;
-    toast("Numri u ruajt ✓");
-  }catch(e){console.error("save phone",e);toast("Nuk u ruajt dot — sigurohu që SQL-ja u ekzekutua");}
+    authProfile=authProfile||{};authProfile.avatar_url=dataUrl;
+    renderAuthUI();openProfile();toast("Fotoja u përditësua ✓");
+  }catch(e){console.error("avatar",e);toast("Nuk u ngarkua dot fotoja");}
+}
+async function saveProfile(){
+  if(!supa||!authUser)return;
+  const g=id=>document.getElementById(id);
+  const full_name=g("profName")?g("profName").value.trim():"";
+  const phone=g("profPhone")?g("profPhone").value.trim():"";
+  const bio=g("profBio")?g("profBio").value.trim():"";
+  const city=g("profCity")?g("profCity").value.trim():"";
+  const core={phone};if(full_name)core.full_name=full_name;
+  const {error:e1}=await supa.from("profiles").update(core).eq("id",authUser.id);
+  authProfile=authProfile||{};Object.assign(authProfile,core);
+  const {error:e2}=await supa.from("profiles").update({bio,city}).eq("id",authUser.id);
+  if(!e2){authProfile.bio=bio;authProfile.city=city;}
+  renderAuthUI();
+  if(e1)toast("Gabim: "+e1.message);
+  else toast(e2?"U ruajt (për bio/qytetin ekzekuto ALTER-in e vogël)":"Profili u ruajt ✓");
 }
 
 /* ================= STATS / COUNT REFRESH ================= */
