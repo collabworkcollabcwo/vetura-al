@@ -1233,9 +1233,12 @@ function render(){
   if(CLOUD&&!cloudLoaded&&!CARS.length){
     empty=`<div class="empty"><h3>Duke ngarkuar shpalljet…</h3><p>Një moment.</p></div>`;
   }else if(!CARS.length){
-    empty=`<div class="empty"><h3>Ende s'ka shpallje</h3><p>Bëhu i pari që publikon një makinë në VETURA.AL.</p><button class="btn-ghost" onclick="openSell()">+ Publiko shpalljen falas</button></div>`;
+    empty=`<div class="empty"><h3>Ende s'ka shpallje</h3><p>Bëhu i pari që publikon në VETURA.AL.</p><button class="btn-ghost" onclick="openSell()">+ Publiko shpalljen falas</button></div>`;
+  }else if(state.category&&!CARS.some(c=>catOf(c)===state.category)){
+    const cl=CAT_LBL[state.category];
+    empty=`<div class="empty"><h3>Ende s'ka ${cl.label.toLowerCase()}</h3><p>Asnjë ${cl.single.toLowerCase()} s'është publikuar ende. Bëhu i pari!</p><button class="btn-ghost" onclick="openSell({category:'${state.category}'})">${cl.icon} Publiko një ${cl.single.toLowerCase()}</button></div>`;
   }else{
-    empty=`<div class="empty"><h3>Asnjë makinë nuk përputhet me filtrat</h3><p>Provo të zgjerosh kriteret e kërkimit ose pastro filtrat.</p><button class="btn-ghost" onclick="resetAll()">Pastro filtrat</button></div>`;
+    empty=`<div class="empty"><h3>Asnjë shpallje nuk përputhet me filtrat</h3><p>Provo të zgjerosh kriteret e kërkimit ose pastro filtrat.</p><button class="btn-ghost" onclick="resetAll()">Pastro filtrat</button></div>`;
   }
   grid.innerHTML=slice.length?slice.map(cardHTML).join(""):empty;
   document.getElementById("resCount").textContent=r.length+" rezultate";
