@@ -1244,7 +1244,7 @@ function render(){
   document.getElementById("resCount").textContent=r.length+" rezultate";
   document.getElementById("resTitle").textContent=state.favOnly?"Të preferuarat e tua":state.mineOnly?"Shpalljet e mia":(state.make?state.make+(state.model?" "+state.model:"")+" në shitje":(state.category?CAT_LBL[state.category].label+" në shitje":"Të gjitha shpalljet"));
   document.getElementById("btnMore").style.display=r.length>state.shown?"":"none";
-  document.getElementById("btnSearchLbl").textContent="Kërko "+filteredCountForSearch()+" makina";
+  document.getElementById("btnSearchLbl").textContent="Kërko "+filteredCountForSearch()+" "+(state.category?CAT_LBL[state.category].label.toLowerCase():"shpallje");
   renderActiveFilters();
 }
 function filteredCountForSearch(){return filtered().length}
