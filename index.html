@@ -60,6 +60,10 @@ a{color:inherit;text-decoration:none}
 .hero p{margin-top:16px;font-size:17px;color:var(--ink2);max-width:560px}
 .hero-road{position:absolute;right:24px;top:70px;width:340px;opacity:.9;pointer-events:none}
 @media(max-width:1020px){.hero-road{display:none}}
+.hero-cats{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.hero-cats button{display:flex;align-items:center;gap:9px;padding:11px 20px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font-weight:700;font-size:15px;color:var(--ink);box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.hero-cats button:hover{border-color:var(--ink);transform:translateY(-2px)}
+.hero-cats button .hc-ic{font-size:19px;line-height:1}
 
 /* search panel */
 .search-panel{max-width:1280px;margin:26px auto 0;padding:0 24px}
@@ -539,8 +543,9 @@ a{color:inherit;text-decoration:none}
       <span class="logo-name">VETURA<span>.AL</span></span>
     </a>
     <nav class="nav" aria-label="Navigimi kryesor">
-      <a href="#listings">Blej makinë</a>
-      <a href="#shit">Shit makinën</a>
+      <a href="#listings" data-navcat="car">Makina</a>
+      <a href="#listings" data-navcat="motorcycle">Motorë</a>
+      <a href="#listings" data-navcat="bicycle">Biçikleta</a>
       <a href="#financim">Financimi</a>
       <a href="#" id="navCmp">Krahaso</a>
     </nav>
@@ -566,6 +571,11 @@ a{color:inherit;text-decoration:none}
   <div class="hero-eyebrow"><span class="dot"></span> Tregu nr. 1 i makinave në Shqipëri</div>
   <h1>Makina e duhur,<br>me <em>çmimin e duhur</em>.</h1>
   <p>Mijëra makina të verifikuara nga koncesionarë në të gjithë Shqipërinë — me vlerësim çmimi, historik kilometrazhi dhe financim të menjëhershëm.</p>
+  <div class="hero-cats" id="heroCats">
+    <button data-navcat="car"><span class="hc-ic">🚗</span> Makina</button>
+    <button data-navcat="motorcycle"><span class="hc-ic">🏍️</span> Motorë</button>
+    <button data-navcat="bicycle"><span class="hc-ic">🚲</span> Biçikleta</button>
+  </div>
   <svg class="hero-road" viewBox="0 0 340 200" fill="none" aria-hidden="true">
     <path d="M10 190 C 110 150, 150 60, 330 30" stroke="#DCE0E6" stroke-width="26" stroke-linecap="round"/>
     <path d="M10 190 C 110 150, 150 60, 330 30" stroke="#fff" stroke-width="2.5" stroke-dasharray="14 12" stroke-linecap="round"/>
@@ -1418,13 +1428,18 @@ function buildCatTabs(){
   const tabs=[{k:"",label:"Të gjitha",icon:"🚘"},...CATEGORIES];
   wrap.innerHTML=tabs.map(t=>`<button class="cat-tab ${state.category===t.k?"on":""}" data-cat="${t.k}">${t.icon} ${t.label} <span class="ct-n">${cnt(t.k)}</span></button>`).join("");
 }
-document.getElementById("catTabs").addEventListener("click",e=>{
-  const b=e.target.closest("[data-cat]");if(!b)return;
-  state.category=b.dataset.cat;state.shown=12;
-  document.querySelectorAll("#catTabs .cat-tab").forEach(x=>x.classList.toggle("on",x.dataset.cat===state.category));
+function goCategory(cat){
+  state.category=cat;state.mineOnly=false;state.favOnly=false;state.shown=12;
+  document.querySelectorAll("#catTabs .cat-tab").forEach(x=>x.classList.toggle("on",x.dataset.cat===cat));
+  document.getElementById("btnMineHdr").classList.remove("on");
   renderLatest();render();
   document.getElementById("listings").scrollIntoView({behavior:"smooth"});
+}
+document.getElementById("catTabs").addEventListener("click",e=>{
+  const b=e.target.closest("[data-cat]");if(!b)return;
+  goCategory(b.dataset.cat);
 });
+document.querySelectorAll("[data-navcat]").forEach(el=>el.addEventListener("click",e=>{e.preventDefault();goCategory(el.dataset.navcat)}));
 function applyCategoryToForm(cat){
   sellState.category=cat;
   document.querySelectorAll("#slCatPick button").forEach(b=>b.classList.toggle("on",b.dataset.cat===cat));
