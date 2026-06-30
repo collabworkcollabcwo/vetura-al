@@ -549,8 +549,7 @@ a{color:inherit;text-decoration:none}
     </a>
     <nav class="nav" aria-label="Navigimi kryesor">
       <a href="#listings" data-navcat="car">Makina</a>
-      <a href="#listings" data-navcat="motorcycle">Motorë</a>
-      <a href="#listings" data-navcat="bicycle">Biçikleta</a>
+      <a href="#listings" data-navcat="twowheel">Motorë &amp; biçikleta</a>
       <a href="#financim">Financimi</a>
       <a href="#" id="navCmp">Krahaso</a>
     </nav>
@@ -1018,6 +1017,10 @@ const BODY_OPTS={
 const catOf=c=>c.category||"car";
 const isCar=c=>catOf(c)==="car";
 const CAT_LBL=Object.fromEntries(CATEGORIES.map(c=>[c.k,c]));
+/* browse groups: cars on their own, motorcycles+bicycles combined */
+const CAT_GROUPS=[{k:"car",label:"Makina",single:"makinë",icon:"🚗",cats:["car"]},{k:"twowheel",label:"Motorë & Biçikleta",single:"motor ose biçikletë",icon:"🏍️",cats:["motorcycle","bicycle"]}];
+const GROUP_LBL=Object.fromEntries(CAT_GROUPS.map(g=>[g.k,g]));
+const inGroup=(c,gk)=>!gk||(GROUP_LBL[gk]?GROUP_LBL[gk].cats.includes(catOf(c)):true);
 const FEATURES_POOL=["Kamera 360°","Navigacion","Ulëse lëkure","Çati panoramike","Apple CarPlay","Android Auto","Sensorë parkimi","Cruise control adaptiv","Ngrohje ulësesh","Fenerë LED Matrix","Mbajtje korsie","Frenim emergjent","Hapje pa çelës","Bagazh elektrik","Klimë 3-zonale","Head-up display"];
 const REVIEWS_POOL=[
   {n:"Arben K.",t:"Makina erdhi saktësisht siç ishte përshkruar. Procesi i blerjes shumë profesional."},
@@ -1191,7 +1194,7 @@ function filtered(){
     (!state.deals.size||state.deals.has(c.deal))&&
     (!state.favOnly||favs.has(c.id))&&
     (!state.mineOnly||c.mine)&&
-    (!state.category||catOf(c)===state.category)
+    (!state.category||inGroup(c,state.category))
   );
   const S={
     "price-asc":(a,b)=>a.price-b.price,
@@ -1245,17 +1248,17 @@ function render(){
     empty=`<div class="empty"><h3>Duke ngarkuar shpalljet…</h3><p>Një moment.</p></div>`;
   }else if(!CARS.length){
     empty=`<div class="empty"><h3>Ende s'ka shpallje</h3><p>Bëhu i pari që publikon në VETURA.AL.</p><button class="btn-ghost" onclick="openSell()">+ Publiko shpalljen falas</button></div>`;
-  }else if(state.category&&!CARS.some(c=>catOf(c)===state.category)){
-    const cl=CAT_LBL[state.category];
-    empty=`<div class="empty"><h3>Ende s'ka ${cl.label.toLowerCase()}</h3><p>Asnjë ${cl.single.toLowerCase()} s'është publikuar ende. Bëhu i pari!</p><button class="btn-ghost" onclick="openSell({category:'${state.category}'})">${cl.icon} Publiko një ${cl.single.toLowerCase()}</button></div>`;
+  }else if(state.category&&!CARS.some(c=>inGroup(c,state.category))){
+    const cl=GROUP_LBL[state.category];
+    empty=`<div class="empty"><h3>Ende s'ka ${cl.label.toLowerCase()}</h3><p>Asnjë ${cl.single} s'është publikuar ende. Bëhu i pari!</p><button class="btn-ghost" onclick="openSell({category:'${state.category==="car"?"car":"motorcycle"}'})">${cl.icon} Publiko një ${cl.single}</button></div>`;
   }else{
     empty=`<div class="empty"><h3>Asnjë shpallje nuk përputhet me filtrat</h3><p>Provo të zgjerosh kriteret e kërkimit ose pastro filtrat.</p><button class="btn-ghost" onclick="resetAll()">Pastro filtrat</button></div>`;
   }
   grid.innerHTML=slice.length?slice.map(cardHTML).join(""):empty;
   document.getElementById("resCount").textContent=r.length+" rezultate";
-  document.getElementById("resTitle").textContent=state.favOnly?"Të preferuarat e tua":state.mineOnly?"Shpalljet e mia":(state.make?state.make+(state.model?" "+state.model:"")+" në shitje":(state.category?CAT_LBL[state.category].label+" në shitje":"Të gjitha shpalljet"));
+  document.getElementById("resTitle").textContent=state.favOnly?"Të preferuarat e tua":state.mineOnly?"Shpalljet e mia":(state.make?state.make+(state.model?" "+state.model:"")+" në shitje":(state.category?GROUP_LBL[state.category].label+" në shitje":"Të gjitha shpalljet"));
   document.getElementById("btnMore").style.display=r.length>state.shown?"":"none";
-  document.getElementById("btnSearchLbl").textContent="Kërko "+filteredCountForSearch()+" "+(state.category?CAT_LBL[state.category].label.toLowerCase():"shpallje");
+  document.getElementById("btnSearchLbl").textContent="Kërko "+filteredCountForSearch()+" "+(state.category?GROUP_LBL[state.category].label.toLowerCase():"shpallje");
   renderActiveFilters();
 }
 function filteredCountForSearch(){return filtered().length}
@@ -1418,26 +1421,26 @@ function updateMineCount(){
 }
 function renderLatest(){
   const sec=document.getElementById("latestSec"),row=document.getElementById("latestRow");
-  const list=(CLOUD?cloudCars:myListings).filter(c=>!state.category||catOf(c)===state.category).slice(0,10);
+  const list=(CLOUD?cloudCars:myListings).filter(c=>inGroup(c,state.category)).slice(0,10);
   if(!list.length){sec.style.display="none";return;}
   sec.style.display="";
   row.innerHTML=list.map(cardHTML).join("");
 }
 function buildCatTabs(){
   const wrap=document.getElementById("catTabs");if(!wrap)return;
-  const cnt=k=>k?CARS.reduce((a,x)=>catOf(x)===k?a+1:a,0):CARS.length;
-  const tabs=[{k:"",label:"Të gjitha",icon:"🚘"},...CATEGORIES];
+  const cnt=k=>k?CARS.reduce((a,x)=>inGroup(x,k)?a+1:a,0):CARS.length;
+  const tabs=[{k:"",label:"Të gjitha",icon:"🚘"},...CAT_GROUPS];
   wrap.innerHTML=tabs.map(t=>`<button class="cat-tab ${state.category===t.k?"on":""}" data-cat="${t.k}">${t.icon} ${t.label} <span class="ct-n">${cnt(t.k)}</span></button>`).join("");
   renderHeroCats();
 }
 function renderHeroCats(){
   const wrap=document.getElementById("heroCats");if(!wrap)return;
-  const cnt=k=>CARS.reduce((a,x)=>catOf(x)===k?a+1:a,0);
-  const ill={car:carSVG({color:["–","#3C4452"],body:"suv",id:"hcCar"},120),motorcycle:motoSVG({color:["–","#3C4452"]},120),bicycle:bikeSVG({color:["–","#D8232A"]},120)};
-  const bg={car:["#E8ECF3","#D4DCE8"],motorcycle:["#ECE7F1","#DCD3E3"],bicycle:["#FBE9E9","#F4D7D7"]};
-  wrap.innerHTML=CATEGORIES.map(c=>{const n=cnt(c.k);return `<button class="hero-cat" data-navcat="${c.k}">
+  const cnt=k=>CARS.reduce((a,x)=>inGroup(x,k)?a+1:a,0);
+  const ill={car:carSVG({color:["–","#3C4452"],body:"suv",id:"hcCar"},120),twowheel:motoSVG({color:["–","#3C4452"]},120)};
+  const bg={car:["#E8ECF3","#D4DCE8"],twowheel:["#ECE7F1","#DCD3E3"]};
+  wrap.innerHTML=CAT_GROUPS.map(c=>{const n=cnt(c.k);return `<button class="hero-cat" data-navcat="${c.k}">
     <span class="hc-ill" style="background:linear-gradient(160deg,${bg[c.k][0]},${bg[c.k][1]})">${ill[c.k]}</span>
-    <span class="hc-text"><b>${c.label}</b><span>${n} ${n===1?"shpallje":"shpallje"}</span></span>
+    <span class="hc-text"><b>${c.label}</b><span>${n} shpallje</span></span>
   </button>`}).join("");
 }
 function goCategory(cat){
@@ -2319,7 +2322,7 @@ function openSell(prefill,editId){
     f("sellTitle").textContent="Ndrysho shpalljen";f("slPublish").textContent="Ruaj ndryshimet";
   } else {
     sellState.scene=pick(SCENES);sellState.plate=plate();
-    applyCategoryToForm((prefill&&prefill.category)||state.category||"car");
+    applyCategoryToForm((prefill&&CAT_LBL[prefill.category])?prefill.category:"car");
     f("sellTitle").textContent="Publiko shpalljen tënde";f("slPublish").textContent="Publiko shpalljen →";
     if(authUser){f("slName").value=userName();if(authProfile&&authProfile.phone)f("slPhone").value=authProfile.phone;}
     if(prefill){if(prefill.make){ensureMakeModel(prefill.make);rebuildMakeSelects();f("slMake").value=prefill.make}if(prefill.year)f("slYear").value=prefill.year;if(prefill.km)f("slKm").value=prefill.km}
