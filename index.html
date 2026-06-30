@@ -60,7 +60,7 @@ a{color:inherit;text-decoration:none}
 .hero p{margin-top:16px;font-size:17px;color:var(--ink2);max-width:560px}
 .hero-road{position:absolute;right:24px;top:70px;width:340px;opacity:.9;pointer-events:none}
 @media(max-width:1020px){.hero-road{display:none}}
-.hero-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:26px;max-width:660px}
+.hero-cats{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:26px;max-width:500px}
 @media(max-width:560px){.hero-cats{grid-template-columns:1fr;gap:10px;max-width:none}}
 .hero-cat{display:flex;align-items:center;gap:14px;padding:12px 16px 12px 12px;border:1.5px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s,border-color .15s;text-align:left;width:100%}
 .hero-cat:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--ink)}
@@ -576,12 +576,6 @@ a{color:inherit;text-decoration:none}
   <h1>Automjeti i duhur,<br>me <em>çmimin e duhur</em>.</h1>
   <p>Makina, motorë dhe biçikleta të verifikuara nga shitës në të gjithë Shqipërinë — me vlerësim çmimi, financim dhe blerës realë.</p>
   <div class="hero-cats" id="heroCats"></div>
-  <svg class="hero-road" viewBox="0 0 340 200" fill="none" aria-hidden="true">
-    <path d="M10 190 C 110 150, 150 60, 330 30" stroke="#DCE0E6" stroke-width="26" stroke-linecap="round"/>
-    <path d="M10 190 C 110 150, 150 60, 330 30" stroke="#fff" stroke-width="2.5" stroke-dasharray="14 12" stroke-linecap="round"/>
-    <circle cx="330" cy="30" r="7" fill="#D8232A"/>
-    <circle cx="330" cy="30" r="13" stroke="#D8232A" stroke-width="2" opacity=".3"/>
-  </svg>
 </section>
 
 <!-- ======= SEARCH PANEL ======= -->
@@ -635,23 +629,12 @@ a{color:inherit;text-decoration:none}
 
 <!-- ======= STATS ======= -->
 <section class="stats" aria-label="Statistika">
-  <div class="stat"><span class="ic">🚗</span><div><b id="statTotal">0</b><span>makina në shitje</span></div></div>
+  <div class="stat"><span class="ic">🚗</span><div><b id="statTotal">0</b><span>mjete në shitje</span></div></div>
   <div class="stat"><span class="ic">🏷️</span><div><b id="statDeals">0</b><span>me çmim shumë të mirë</span></div></div>
   <div class="stat"><span class="ic">🏢</span><div><b>64</b><span>koncesionarë të verifikuar</span></div></div>
   <div class="stat"><span class="ic">⭐</span><div><b>4.8/5</b><span>nga 12,400+ vlerësime</span></div></div>
 </section>
 
-<!-- ======= LATEST LISTINGS ======= -->
-<section class="section latest-sec" id="latestSec" aria-label="Shpalljet e fundit" style="display:none">
-  <div class="latest-head">
-    <div>
-      <div class="sec-eyebrow">Të reja në treg</div>
-      <h2 class="sec-title">Shpalljet e fundit</h2>
-    </div>
-    <button class="btn-ghost" id="latestAll">Shiko të gjitha →</button>
-  </div>
-  <div class="latest-row" id="latestRow"></div>
-</section>
 
 <!-- ======= MAIN: FILTERS + LISTINGS ======= -->
 <main class="main" id="listings">
@@ -1393,8 +1376,6 @@ function onCarGridClick(e){
   if(dt){openDetail(+dt.dataset.detail);return}
 }
 document.getElementById("grid").addEventListener("click",onCarGridClick);
-document.getElementById("latestRow").addEventListener("click",onCarGridClick);
-document.getElementById("latestAll").addEventListener("click",()=>{document.getElementById("listings").scrollIntoView({behavior:"smooth"})});
 document.getElementById("btnMore").addEventListener("click",()=>{state.shown+=12;render()});
 document.getElementById("sortSel").addEventListener("change",e=>{state.sort=e.target.value;render()});
 document.getElementById("btnReset").addEventListener("click",resetAll);
@@ -1421,6 +1402,7 @@ function updateMineCount(){
 }
 function renderLatest(){
   const sec=document.getElementById("latestSec"),row=document.getElementById("latestRow");
+  if(!sec||!row)return;
   const list=(CLOUD?cloudCars:myListings).filter(c=>inGroup(c,state.category)).slice(0,10);
   if(!list.length){sec.style.display="none";return;}
   sec.style.display="";
