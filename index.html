@@ -80,15 +80,6 @@ a{color:inherit;text-decoration:none}
 .hero p{margin-top:16px;font-size:17px;color:var(--ink2);max-width:560px}
 .hero-road{position:absolute;right:24px;top:70px;width:340px;opacity:.9;pointer-events:none}
 @media(max-width:1020px){.hero-road{display:none}}
-.hero-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:26px;max-width:700px}
-@media(max-width:700px){.hero-cats{grid-template-columns:1fr;gap:10px;max-width:none}}
-.hero-cat{display:flex;align-items:center;gap:14px;padding:12px 16px 12px 12px;border:1.5px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s,border-color .15s;text-align:left;width:100%}
-.hero-cat:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--ink)}
-.hero-cat .hc-ill{width:68px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none}
-.hero-cat .hc-ill svg{width:62px;height:auto}
-.hero-cat .hc-text{display:flex;flex-direction:column;gap:1px;min-width:0}
-.hero-cat .hc-text b{font-family:var(--font-d);font-size:16px;font-weight:800;letter-spacing:-.01em}
-.hero-cat .hc-text span{font-size:12.5px;color:var(--ink3);font-weight:600}
 
 /* search panel */
 .search-panel{max-width:1280px;margin:26px auto 0;padding:0 24px}
@@ -595,7 +586,6 @@ a{color:inherit;text-decoration:none}
   <div class="hero-eyebrow"><span class="dot"></span> Tregu nr. 1 i automjeteve në Shqipëri</div>
   <h1>Automjeti i duhur,<br>me <em>çmimin e duhur</em>.</h1>
   <p>Makina, motorë dhe biçikleta të verifikuara nga shitës në të gjithë Shqipërinë — me vlerësim çmimi, financim dhe blerës realë.</p>
-  <div class="hero-cats" id="heroCats"></div>
 </section>
 
 <!-- ======= SEARCH PANEL ======= -->
@@ -1490,17 +1480,6 @@ function buildCatTabs(){
   const cnt=k=>k?CARS.reduce((a,x)=>inGroup(x,k)?a+1:a,0):CARS.length;
   const tabs=[{k:"",label:"Të gjitha",icon:"grid"},...CAT_GROUPS];
   wrap.innerHTML=tabs.map(t=>`<button class="cat-tab ${state.category===t.k?"on":""}" data-cat="${t.k}">${icon(t.icon,15)} ${t.label} <span class="ct-n">${cnt(t.k)}</span></button>`).join("");
-  renderHeroCats();
-}
-function renderHeroCats(){
-  const wrap=document.getElementById("heroCats");if(!wrap)return;
-  const cnt=k=>CARS.reduce((a,x)=>inGroup(x,k)?a+1:a,0);
-  const ill={car:carSVG({color:["–","#3C4452"],body:"suv",id:"hcCar"},120),motorcycle:motoSVG({color:["–","#3C4452"]},120),bicycle:bikeSVG({color:["–","#D8232A"]},120)};
-  const bg={car:["#E8ECF3","#D4DCE8"],motorcycle:["#ECE7F1","#DCD3E3"],bicycle:["#FBE9E9","#F4D7D7"]};
-  wrap.innerHTML=CAT_GROUPS.map(c=>{const n=cnt(c.k);return `<button class="hero-cat" data-navcat="${c.k}">
-    <span class="hc-ill" style="background:linear-gradient(160deg,${bg[c.k][0]},${bg[c.k][1]})">${ill[c.k]}</span>
-    <span class="hc-text"><b>${c.label}</b><span>${n} shpallje</span></span>
-  </button>`}).join("");
 }
 function goCategory(cat,noScroll){
   const changed=state.category!==cat;
@@ -1540,7 +1519,6 @@ document.getElementById("catTabs").addEventListener("click",e=>{
   goCategory(b.dataset.cat);
 });
 document.querySelectorAll(".nav [data-navcat]").forEach(el=>el.addEventListener("click",e=>{e.preventDefault();goCategory(el.dataset.navcat)}));
-document.getElementById("heroCats").addEventListener("click",e=>{const b=e.target.closest("[data-navcat]");if(b)goCategory(b.dataset.navcat)});
 function applyCategoryToForm(cat){
   sellState.category=cat;
   document.querySelectorAll("#slCatPick button").forEach(b=>b.classList.toggle("on",b.dataset.cat===cat));
