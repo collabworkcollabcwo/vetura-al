@@ -72,7 +72,7 @@ a{color:inherit;text-decoration:none}
 
 /* search panel */
 .search-panel{max-width:1280px;margin:26px auto 0;padding:0 24px}
-.sp-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;display:grid;grid-template-columns:1.2fr 1.2fr 1fr 1fr 1.4fr;gap:12px;align-items:end}
+.sp-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;display:grid;grid-template-columns:1fr 1.1fr 1.1fr .9fr .9fr 1.3fr;gap:12px;align-items:end}
 .sp-field label{display:block;font-family:var(--font-m);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
 .sp-field select,.sp-field input{width:100%;height:44px;border:1.5px solid var(--line);border-radius:var(--radius-s);padding:0 12px;background:#fff;font-weight:500;transition:border-color .15s}
 .sp-field select:hover,.sp-field input:hover{border-color:#B8BEC7}
@@ -582,6 +582,14 @@ a{color:inherit;text-decoration:none}
 <section class="search-panel" aria-label="Kërkimi i makinave">
   <div class="sp-card">
     <div class="sp-field">
+      <label for="sCat">Mjeti</label>
+      <select id="sCat">
+        <option value="">Të gjitha mjetet</option>
+        <option value="car">Makina</option>
+        <option value="twowheel">Motorë &amp; biçikleta</option>
+      </select>
+    </div>
+    <div class="sp-field">
       <label for="sMake">Marka</label>
       <select id="sMake"><option value="">Të gjitha markat</option></select>
     </div>
@@ -1004,6 +1012,21 @@ const CAT_LBL=Object.fromEntries(CATEGORIES.map(c=>[c.k,c]));
 const CAT_GROUPS=[{k:"car",label:"Makina",single:"makinë",icon:"🚗",cats:["car"]},{k:"twowheel",label:"Motorë & Biçikleta",single:"motor ose biçikletë",icon:"🏍️",cats:["motorcycle","bicycle"]}];
 const GROUP_LBL=Object.fromEntries(CAT_GROUPS.map(g=>[g.k,g]));
 const inGroup=(c,gk)=>!gk||(GROUP_LBL[gk]?GROUP_LBL[gk].cats.includes(catOf(c)):true);
+const CAR_BRANDS=Object.keys(MAKES);
+/* makes available for a vehicle group: from real listings, plus the known car brands for cars */
+function makesFor(gk){
+  if(!gk)return Object.keys(MAKES).sort();
+  const s=new Set(CARS.filter(c=>inGroup(c,gk)).map(c=>c.make));
+  if(gk==="car")CAR_BRANDS.forEach(b=>s.add(b));
+  return [...s].sort();
+}
+function buildMakeSelect(){
+  const mk=document.getElementById("sMake");if(!mk)return;
+  mk.innerHTML='<option value="">Të gjitha markat</option>';
+  makesFor(state.category).forEach(m=>mk.add(new Option(m,m)));
+  mk.value=state.make;
+  buildModelSelect();
+}
 const FEATURES_POOL=["Kamera 360°","Navigacion","Ulëse lëkure","Çati panoramike","Apple CarPlay","Android Auto","Sensorë parkimi","Cruise control adaptiv","Ngrohje ulësesh","Fenerë LED Matrix","Mbajtje korsie","Frenim emergjent","Hapje pa çelës","Bagazh elektrik","Klimë 3-zonale","Head-up display"];
 const REVIEWS_POOL=[
   {n:"Arben K.",t:"Makina erdhi saktësisht siç ishte përshkruar. Procesi i blerjes shumë profesional."},
@@ -1306,8 +1329,8 @@ function syncChecks(){
   document.querySelectorAll("[data-body]").forEach(b=>b.classList.toggle("on",state.bodies.has(b.dataset.body)));
 }
 function syncSearchUI(){
-  document.getElementById("sMake").value=state.make;
-  buildModelSelect();
+  const sc=document.getElementById("sCat");if(sc)sc.value=state.category;
+  buildMakeSelect();
   document.getElementById("sModel").value=state.model;
   document.getElementById("sPrice").value=state.priceMax??"";
   document.getElementById("sYear").value=state.yearMin??"";
@@ -1328,11 +1351,12 @@ function resetAll(){
 /* ================= SEARCH PANEL ================= */
 function buildSearch(){
   const mk=document.getElementById("sMake");
-  Object.keys(MAKES).sort().forEach(m=>mk.add(new Option(m,m)));
+  buildMakeSelect();
   const vmk=document.getElementById("vMake");
   Object.keys(MAKES).sort().forEach(m=>vmk.add(new Option(m,m)));
   const vy=document.getElementById("vYear");
   for(let y=2026;y>=2008;y--)vy.add(new Option(y,y));
+  document.getElementById("sCat").addEventListener("change",e=>goCategory(e.target.value,true));
   mk.addEventListener("change",()=>{state.make=mk.value;state.model="";buildModelSelect();render()});
   document.getElementById("sModel").addEventListener("change",e=>{state.model=e.target.value;render()});
   document.getElementById("sPrice").addEventListener("change",e=>{state.priceMax=e.target.value?+e.target.value:null;render()});
@@ -1425,12 +1449,15 @@ function renderHeroCats(){
     <span class="hc-text"><b>${c.label}</b><span>${n} shpallje</span></span>
   </button>`}).join("");
 }
-function goCategory(cat){
+function goCategory(cat,noScroll){
   state.category=cat;state.mineOnly=false;state.favOnly=false;state.shown=12;
+  if(state.make&&!makesFor(cat).includes(state.make)){state.make="";state.model="";}
   document.querySelectorAll("#catTabs .cat-tab").forEach(x=>x.classList.toggle("on",x.dataset.cat===cat));
   document.getElementById("btnMineHdr").classList.remove("on");
+  const sc=document.getElementById("sCat");if(sc)sc.value=cat;
+  buildMakeSelect();
   renderLatest();render();
-  document.getElementById("listings").scrollIntoView({behavior:"smooth"});
+  if(!noScroll)document.getElementById("listings").scrollIntoView({behavior:"smooth"});
 }
 document.getElementById("catTabs").addEventListener("click",e=>{
   const b=e.target.closest("[data-cat]");if(!b)return;
@@ -2095,12 +2122,10 @@ function updateFilterCounts(){
 }
 function rebuildMakeSelects(){
   const keys=Object.keys(MAKES).sort();
-  const sMake=document.getElementById("sMake");
-  sMake.innerHTML='<option value="">Të gjitha markat</option>';keys.forEach(m=>sMake.add(new Option(m,m)));sMake.value=state.make;
+  buildMakeSelect();
   const vMake=document.getElementById("vMake");
   vMake.innerHTML='<option value="">Marka *</option>';keys.forEach(m=>vMake.add(new Option(m,m)));
   const dl=document.getElementById("dlMakes");if(dl)dl.innerHTML=keys.map(m=>`<option value="${m}"></option>`).join("");
-  buildModelSelect();
 }
 function ensureMineChip(){
   const has=CLOUD?CARS.some(c=>c.mine):myListings.length>0;
