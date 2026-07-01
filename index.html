@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VETURA.AL — Tregu i makinave në Shqipëri</title>
+<title>VETURA.AL — Tregu i automjeteve në Shqipëri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -60,8 +60,8 @@ a{color:inherit;text-decoration:none}
 .hero p{margin-top:16px;font-size:17px;color:var(--ink2);max-width:560px}
 .hero-road{position:absolute;right:24px;top:70px;width:340px;opacity:.9;pointer-events:none}
 @media(max-width:1020px){.hero-road{display:none}}
-.hero-cats{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:26px;max-width:500px}
-@media(max-width:560px){.hero-cats{grid-template-columns:1fr;gap:10px;max-width:none}}
+.hero-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:26px;max-width:700px}
+@media(max-width:700px){.hero-cats{grid-template-columns:1fr;gap:10px;max-width:none}}
 .hero-cat{display:flex;align-items:center;gap:14px;padding:12px 16px 12px 12px;border:1.5px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s,border-color .15s;text-align:left;width:100%}
 .hero-cat:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--ink)}
 .hero-cat .hc-ill{width:68px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none}
@@ -442,10 +442,11 @@ a{color:inherit;text-decoration:none}
 .latest-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(272px,1fr);gap:18px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity;scrollbar-width:thin}
 .latest-row>.card{scroll-snap-align:start}
 @media(max-width:560px){.latest-row{grid-auto-columns:minmax(240px,86%)}.latest-head .btn-ghost{display:none}}
-/* my-listings header button */
-.btn-mine-hdr{display:flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--line);border-radius:999px;font-weight:600;font-size:13.5px;background:#fff;transition:border-color .15s}
-.btn-mine-hdr:hover{border-color:var(--ink)}
-.btn-mine-hdr.on{border-color:var(--plate);background:#E7F0FB;color:var(--plate)}
+/* header smoothing */
+.hdr-right>*{flex:none}
+.btn-fav-hdr,.btn-sell,.btn-login{white-space:nowrap}
+@media(max-width:880px){.btn-fav-hdr .lbl{display:none}}
+.main{scroll-margin-top:78px}
 /* share button in detail */
 .btn-share{width:100%;height:42px;margin-top:8px;border:1.5px solid var(--line);border-radius:var(--radius-s);font-weight:700;font-size:13.5px;color:var(--ink2);background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
 .btn-share:hover{border-color:var(--plate);color:var(--plate)}
@@ -549,23 +550,19 @@ a{color:inherit;text-decoration:none}
     </a>
     <nav class="nav" aria-label="Navigimi kryesor">
       <a href="#listings" data-navcat="car">Makina</a>
-      <a href="#listings" data-navcat="twowheel">Motorë &amp; biçikleta</a>
+      <a href="#listings" data-navcat="motorcycle">Motorë</a>
+      <a href="#listings" data-navcat="bicycle">Biçikleta</a>
       <a href="#financim">Financimi</a>
       <a href="#" id="navCmp">Krahaso</a>
     </nav>
     <div class="hdr-right">
-      <button class="btn-mine-hdr" id="btnMineHdr" aria-label="Shpalljet e mia">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3H4a1 1 0 0 0-1 1v5.59A2 2 0 0 0 3.59 11l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83Z"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor" stroke="none"/></svg>
-        <span class="lbl">Të miat</span>
-        <span class="fav-count zero" id="mineCount">0</span>
-      </button>
       <button class="btn-fav-hdr" id="btnFavHdr" aria-label="Të preferuarat">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
         <span class="lbl">Të preferuarat</span>
         <span class="fav-count zero" id="favCount">0</span>
       </button>
       <span id="authArea"></span>
-      <a href="#shit" class="btn-sell" id="btnSellHdr">+ Shit makinën</a>
+      <a href="#shit" class="btn-sell" id="btnSellHdr">+ Shit</a>
     </div>
   </div>
 </header>
@@ -586,7 +583,8 @@ a{color:inherit;text-decoration:none}
       <select id="sCat">
         <option value="">Të gjitha mjetet</option>
         <option value="car">Makina</option>
-        <option value="twowheel">Motorë &amp; biçikleta</option>
+        <option value="motorcycle">Motorë</option>
+        <option value="bicycle">Biçikleta</option>
       </select>
     </div>
     <div class="sp-field">
@@ -639,8 +637,8 @@ a{color:inherit;text-decoration:none}
 <section class="stats" aria-label="Statistika">
   <div class="stat"><span class="ic">🚗</span><div><b id="statTotal">0</b><span>mjete në shitje</span></div></div>
   <div class="stat"><span class="ic">🏷️</span><div><b id="statDeals">0</b><span>me çmim shumë të mirë</span></div></div>
-  <div class="stat"><span class="ic">🏢</span><div><b>64</b><span>koncesionarë të verifikuar</span></div></div>
-  <div class="stat"><span class="ic">⭐</span><div><b>4.8/5</b><span>nga 12,400+ vlerësime</span></div></div>
+  <div class="stat"><span class="ic">🏢</span><div><b id="statSellers">0</b><span>shitës aktivë</span></div></div>
+  <div class="stat"><span class="ic">🆓</span><div><b>100%</b><span>falas — publiko pa pagesë</span></div></div>
 </section>
 
 
@@ -653,7 +651,7 @@ a{color:inherit;text-decoration:none}
     </div>
 
     <details class="f-group" open>
-      <summary>Lloji i karrocerisë</summary>
+      <summary id="bodyFilterLbl">Lloji i karrocerisë</summary>
       <div class="body-grid" id="bodyGrid"></div>
     </details>
 
@@ -667,17 +665,17 @@ a{color:inherit;text-decoration:none}
       </div>
     </details>
 
-    <details class="f-group" open>
+    <details class="f-group" open id="fgFuel">
       <summary>Karburanti</summary>
       <div class="f-body" id="fFuel"></div>
     </details>
 
-    <details class="f-group" open>
+    <details class="f-group" open id="fgTrans">
       <summary>Transmisioni</summary>
       <div class="f-body" id="fTrans"></div>
     </details>
 
-    <details class="f-group">
+    <details class="f-group" id="fgKm">
       <summary>Kilometrazhi maksimal</summary>
       <div class="f-body">
         <select id="fKm" style="height:40px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;background:#fff;font-weight:500">
@@ -705,7 +703,7 @@ a{color:inherit;text-decoration:none}
       <div class="f-body" id="fCity"></div>
     </details>
 
-    <details class="f-group">
+    <details class="f-group" id="fgDeal">
       <summary>Vlerësimi i çmimit</summary>
       <div class="f-body" id="fDeal"></div>
     </details>
@@ -769,7 +767,7 @@ a{color:inherit;text-decoration:none}
 
 <!-- ======= SELL / VALUATION ======= -->
 <section class="section" id="shit">
-  <div class="sec-eyebrow">Shit makinën tënde</div>
+  <div class="sec-eyebrow">Shit mjetin tënd</div>
   <h2 class="sec-title">Sa vlen makina jote sot?</h2>
   <div class="val-card">
     <div>
@@ -862,7 +860,7 @@ a{color:inherit;text-decoration:none}
   <div class="modal sell-modal">
     <button class="modal-close" data-close="sellOverlay" aria-label="Mbyll">✕</button>
     <div class="sell-head">
-      <div class="se">Shit makinën tënde</div>
+      <div class="se">Shit mjetin tënd</div>
       <h2 id="sellTitle">Publiko shpalljen tënde</h2>
       <p>Plotëso të dhënat — shpallja shfaqet menjëherë në treg, falas. Fushat me <span style="color:var(--red)">*</span> janë të detyrueshme.</p>
     </div>
@@ -1009,7 +1007,7 @@ const catOf=c=>c.category||"car";
 const isCar=c=>catOf(c)==="car";
 const CAT_LBL=Object.fromEntries(CATEGORIES.map(c=>[c.k,c]));
 /* browse groups: cars on their own, motorcycles+bicycles combined */
-const CAT_GROUPS=[{k:"car",label:"Makina",single:"makinë",icon:"🚗",cats:["car"]},{k:"twowheel",label:"Motorë & Biçikleta",single:"motor ose biçikletë",icon:"🏍️",cats:["motorcycle","bicycle"]}];
+const CAT_GROUPS=[{k:"car",label:"Makina",single:"makinë",icon:"🚗",cats:["car"]},{k:"motorcycle",label:"Motorë",single:"motor",icon:"🏍️",cats:["motorcycle"]},{k:"bicycle",label:"Biçikleta",single:"biçikletë",icon:"🚲",cats:["bicycle"]}];
 const GROUP_LBL=Object.fromEntries(CAT_GROUPS.map(g=>[g.k,g]));
 const inGroup=(c,gk)=>!gk||(GROUP_LBL[gk]?GROUP_LBL[gk].cats.includes(catOf(c)):true);
 const CAR_BRANDS=Object.keys(MAKES);
@@ -1256,7 +1254,7 @@ function render(){
     empty=`<div class="empty"><h3>Ende s'ka shpallje</h3><p>Bëhu i pari që publikon në VETURA.AL.</p><button class="btn-ghost" onclick="openSell()">+ Publiko shpalljen falas</button></div>`;
   }else if(state.category&&!CARS.some(c=>inGroup(c,state.category))){
     const cl=GROUP_LBL[state.category];
-    empty=`<div class="empty"><h3>Ende s'ka ${cl.label.toLowerCase()}</h3><p>Asnjë ${cl.single} s'është publikuar ende. Bëhu i pari!</p><button class="btn-ghost" onclick="openSell({category:'${state.category==="car"?"car":"motorcycle"}'})">${cl.icon} Publiko një ${cl.single}</button></div>`;
+    empty=`<div class="empty"><h3>Ende s'ka ${cl.label.toLowerCase()}</h3><p>Asnjë ${cl.single} s'është publikuar ende. Bëhu i pari!</p><button class="btn-ghost" onclick="openSell({category:'${state.category}'})">${cl.icon} Publiko një ${cl.single}</button></div>`;
   }else{
     empty=`<div class="empty"><h3>Asnjë shpallje nuk përputhet me filtrat</h3><p>Provo të zgjerosh kriteret e kërkimit ose pastro filtrat.</p><button class="btn-ghost" onclick="resetAll()">Pastro filtrat</button></div>`;
   }
@@ -1284,7 +1282,7 @@ function renderActiveFilters(){
   state.cities.forEach(ct=>add(ct,()=>{state.cities.delete(ct);syncChecks()}));
   state.deals.forEach(d=>add(DEAL_LBL[d],()=>{state.deals.delete(d);syncChecks()}));
   if(state.favOnly)add("Vetëm të preferuarat",()=>{state.favOnly=false});
-  if(state.mineOnly)add("Shpalljet e mia",()=>{state.mineOnly=false;const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.classList.remove("on");document.getElementById("btnMineHdr").classList.remove("on")});
+  if(state.mineOnly)add("Shpalljet e mia",()=>{state.mineOnly=false;const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.classList.remove("on")});
   const el=document.getElementById("activeFilters");
   el.innerHTML=tags.map((t,i)=>`<span class="af-tag">${t.lbl}<button data-af="${i}" aria-label="Hiq filtrin">✕</button></span>`).join("");
   el.querySelectorAll("[data-af]").forEach(btn=>btn.addEventListener("click",()=>{tags[+btn.dataset.af].fn();render()}));
@@ -1292,9 +1290,8 @@ function renderActiveFilters(){
 
 /* ================= FILTER UI BUILD ================= */
 function buildFilters(){
-  // body type buttons
-  document.getElementById("bodyGrid").innerHTML=BODIES.map(([k,l])=>
-    `<button class="body-btn" data-body="${k}">${bodyIcon(k)}${l}</button>`).join("");
+  // body type buttons (category-aware)
+  renderBodyFilter();
   // fuel / trans / city / deal checkboxes with counts
   const cnt=(fn)=>CARS.reduce((a,c)=>fn(c)?a+1:a,0);
   document.getElementById("fFuel").innerHTML=FUELS.map(f=>
@@ -1343,7 +1340,6 @@ function resetAll(){
   ["fPriceMin","fPriceMax","fYearMin","fYearMax"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("fKm").value="";
   document.querySelectorAll("#quickChips .chip").forEach(c=>c.classList.remove("on"));
-  document.getElementById("btnMineHdr").classList.remove("on");
   syncChecks();syncSearchUI();render();
   toast("Filtrat u pastruan");
 }
@@ -1407,21 +1403,14 @@ document.getElementById("btnFavHdr").addEventListener("click",()=>{
   state.favOnly=!state.favOnly;state.shown=12;render();
   document.getElementById("listings").scrollIntoView({behavior:"smooth"});
 });
-document.getElementById("btnMineHdr").addEventListener("click",()=>{
-  const count=CLOUD?CARS.filter(c=>c.mine).length:myListings.length;
-  if(!count){openSell();return;}
-  applyMineOnly(!state.mineOnly);
-  if(state.mineOnly)document.getElementById("listings").scrollIntoView({behavior:"smooth"});
-});
 function applyMineOnly(on){
   state.mineOnly=on;state.favOnly=false;state.shown=12;
   const mc=document.querySelector('#quickChips [data-q="mine"]');if(mc)mc.classList.toggle("on",on);
-  document.getElementById("btnMineHdr").classList.toggle("on",on);
   render();
 }
 function updateMineCount(){
+  const el=document.getElementById("mineCount");if(!el)return;
   const count=CLOUD?CARS.filter(c=>c.mine).length:myListings.length;
-  const el=document.getElementById("mineCount");
   el.textContent=count;el.classList.toggle("zero",!count);
 }
 function renderLatest(){
@@ -1442,22 +1431,45 @@ function buildCatTabs(){
 function renderHeroCats(){
   const wrap=document.getElementById("heroCats");if(!wrap)return;
   const cnt=k=>CARS.reduce((a,x)=>inGroup(x,k)?a+1:a,0);
-  const ill={car:carSVG({color:["–","#3C4452"],body:"suv",id:"hcCar"},120),twowheel:motoSVG({color:["–","#3C4452"]},120)};
-  const bg={car:["#E8ECF3","#D4DCE8"],twowheel:["#ECE7F1","#DCD3E3"]};
+  const ill={car:carSVG({color:["–","#3C4452"],body:"suv",id:"hcCar"},120),motorcycle:motoSVG({color:["–","#3C4452"]},120),bicycle:bikeSVG({color:["–","#D8232A"]},120)};
+  const bg={car:["#E8ECF3","#D4DCE8"],motorcycle:["#ECE7F1","#DCD3E3"],bicycle:["#FBE9E9","#F4D7D7"]};
   wrap.innerHTML=CAT_GROUPS.map(c=>{const n=cnt(c.k);return `<button class="hero-cat" data-navcat="${c.k}">
     <span class="hc-ill" style="background:linear-gradient(160deg,${bg[c.k][0]},${bg[c.k][1]})">${ill[c.k]}</span>
     <span class="hc-text"><b>${c.label}</b><span>${n} shpallje</span></span>
   </button>`}).join("");
 }
 function goCategory(cat,noScroll){
+  const changed=state.category!==cat;
   state.category=cat;state.mineOnly=false;state.favOnly=false;state.shown=12;
   if(state.make&&!makesFor(cat).includes(state.make)){state.make="";state.model="";}
+  if(changed){
+    // car-specific filters don't apply across categories — reset them
+    state.bodies.clear();state.fuels.clear();state.trans.clear();state.deals.clear();state.kmMax=null;
+    const km=document.getElementById("fKm");if(km)km.value="";
+    syncChecks();
+  }
   document.querySelectorAll("#catTabs .cat-tab").forEach(x=>x.classList.toggle("on",x.dataset.cat===cat));
-  document.getElementById("btnMineHdr").classList.remove("on");
   const sc=document.getElementById("sCat");if(sc)sc.value=cat;
   buildMakeSelect();
+  renderBodyFilter();
+  updateFilterVisibility();
   renderLatest();render();
   if(!noScroll)document.getElementById("listings").scrollIntoView({behavior:"smooth"});
+}
+function renderBodyFilter(){
+  const grid=document.getElementById("bodyGrid");if(!grid)return;
+  const cat=CAT_LBL[state.category]?state.category:"car";
+  grid.innerHTML=BODY_OPTS[cat].map(([k,l])=>`<button class="body-btn ${state.bodies.has(k)?"on":""}" data-body="${k}">${cat==="car"?bodyIcon(k):""}${l}</button>`).join("");
+  const lbl=document.getElementById("bodyFilterLbl");
+  if(lbl)lbl.textContent=cat==="motorcycle"?"Lloji i motorit":cat==="bicycle"?"Lloji i biçikletës":"Lloji i karrocerisë";
+}
+function updateFilterVisibility(){
+  const cat=state.category;
+  const show=(id,on)=>{const el=document.getElementById(id);if(el)el.style.display=on?"":"none"};
+  show("fgFuel",cat!=="bicycle");
+  show("fgTrans",!cat||cat==="car");
+  show("fgKm",cat!=="bicycle");
+  show("fgDeal",!cat||cat==="car");
 }
 document.getElementById("catTabs").addEventListener("click",e=>{
   const b=e.target.closest("[data-cat]");if(!b)return;
@@ -1511,7 +1523,7 @@ function toggleFav(id){
 function toggleCmp(id){
   if(cmp.has(id))cmp.delete(id);
   else{
-    if(cmp.size>=3){toast("Mund të krahasosh deri në 3 makina");return}
+    if(cmp.size>=3){toast("Mund të krahasosh deri në 3 mjete");return}
     cmp.add(id);
   }
   render();renderTray();
@@ -1530,7 +1542,7 @@ function renderTray(){
 document.getElementById("btnCmpGo").addEventListener("click",openCompare);
 document.getElementById("navCmp").addEventListener("click",e=>{
   e.preventDefault();
-  cmp.size>=2?openCompare():toast("Zgjidh të paktën 2 makina për të krahasuar");
+  cmp.size>=2?openCompare():toast("Zgjidh të paktën 2 mjete për të krahasuar");
 });
 function openCompare(){
   const cars=[...cmp].map(id=>CARS.find(c=>c.id===id));
@@ -1592,19 +1604,22 @@ function openDetail(id){
             <button class="btn-edit" data-edit="${c.id}">✎ Ndrysho</button>
             <button class="btn-del" data-del="${c.id}">🗑 Fshi</button>
           </div>
-        </div>`:`
+        </div>`:(()=>{
+        const realPhone=c.phone||(c.dealer&&c.dealer.phone)||"";
+        return `
         <div class="dealer">
           <div class="d-name">
             <span class="d-logo">${c.dealer.t}</span>
-            <span><b>${c.dealer.n}</b><span>Koncesionar i verifikuar ✓</span></span>
+            <span><b>${c.dealer.n}</b><span>${c._row?"Shitës":"Koncesionar i verifikuar ✓"}</span></span>
           </div>
           <div class="d-meta">
             <span>📍 ${c.dealer.c}, Shqipëri</span>
-            <span>⭐ ${c.dealer.r} · ${c.dealer.v} vlerësime</span>
-            <span>🕐 Hap sot deri në 19:00</span>
+            ${c._row?"":`<span>⭐ ${c.dealer.r} · ${c.dealer.v} vlerësime</span><span>🕐 Hap sot deri në 19:00</span>`}
           </div>
           <button class="btn-contact" id="btnContact">Kontakto shitësin</button>
-          <button class="btn-call" onclick="toast('Numri u kopjua: +355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0')">+355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0</button>
+          ${realPhone
+            ?`<a class="btn-call" style="display:flex;align-items:center;justify-content:center;text-decoration:none" href="tel:${realPhone.replace(/[^+\d]/g,"")}">📞 ${realPhone}</a>`
+            :`<button class="btn-call" onclick="toast('Numri u kopjua: +355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0')">+355 4 22 ${String(c.id).padStart(2,"0")} 4${c.id%10}0</button>`}
           <form class="contact-form" id="contactForm">
             <input type="text" placeholder="Emri juaj *" required>
             <input type="tel" placeholder="Telefoni *" required>
@@ -1612,7 +1627,7 @@ function openDetail(id){
             <button type="submit" class="btn-contact" style="margin:0">Dërgo mesazhin</button>
           </form>
           ${c._uid?`<button class="seller-link" data-seller="${c._uid}">👤 Shiko profilin & vlerësimet e shitësit</button>`:""}
-        </div>`;
+        </div>`;})();
   const descBlock=c.desc?`<div class="feat-wrap"><h4>Përshkrimi</h4><div class="m-desc">${c.desc}</div></div>`:"";
   const featsBlock=c.feats&&c.feats.length?`<div class="feat-wrap"><h4>Pajisjet kryesore</h4><div class="feats">${c.feats.map(f=>`<span class="feat">${f}</span>`).join("")}</div></div>`:"";
   const reviewsBlock=c.reviews&&c.reviews.length?`<div class="feat-wrap"><h4>Vlerësime për shitësin</h4>${c.reviews.map(r=>`<div class="review"><div class="r-top"><span>${r.n}</span><span class="stars">${"★".repeat(r.s)}${"☆".repeat(5-r.s)}</span></div><p>${r.t}</p></div>`).join("")}</div>`:(c.mine?`<div class="feat-wrap"><h4>Vlerësime për shitësin</h4><div class="review"><p>Shpallje e re — ende pa vlerësime. Ato shfaqen pasi blerësit të kontaktojnë.</p></div></div>`:"");
@@ -2110,6 +2125,8 @@ async function saveProfile(){
 function refreshStats(){
   document.getElementById("statTotal").textContent=CARS.length.toLocaleString("de-DE");
   document.getElementById("statDeals").textContent=CARS.filter(c=>c.deal==="great").length;
+  const ss=document.getElementById("statSellers");
+  if(ss)ss.textContent=new Set(CARS.map(c=>c._uid||(c.dealer&&c.dealer.n)||"?")).size;
 }
 function updateFavCount(){const fc=document.getElementById("favCount");fc.textContent=favs.size;fc.classList.toggle("zero",!favs.size)}
 function updateFilterCounts(){
@@ -2329,7 +2346,7 @@ function openSell(prefill,editId){
     f("sellTitle").textContent="Ndrysho shpalljen";f("slPublish").textContent="Ruaj ndryshimet";
   } else {
     sellState.scene=pick(SCENES);sellState.plate=plate();
-    applyCategoryToForm((prefill&&CAT_LBL[prefill.category])?prefill.category:"car");
+    applyCategoryToForm((prefill&&CAT_LBL[prefill.category])?prefill.category:(CAT_LBL[state.category]?state.category:"car"));
     f("sellTitle").textContent="Publiko shpalljen tënde";f("slPublish").textContent="Publiko shpalljen →";
     if(authUser){f("slName").value=userName();if(authProfile&&authProfile.phone)f("slPhone").value=authProfile.phone;}
     if(prefill){if(prefill.make){ensureMakeModel(prefill.make);rebuildMakeSelects();f("slMake").value=prefill.make}if(prefill.year)f("slYear").value=prefill.year;if(prefill.km)f("slKm").value=prefill.km}
